@@ -1,55 +1,57 @@
 import React, {Component} from 'react';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { BrowserRouter as Router, Route} from 'react-router-dom';
+
 import './App.css';
-import Trip from './components/Trip';
-import MyMap from './components/MyMap';
+// import Trip from './components/Trip';
+import MyMap from './components/Map/MyMap';
+
+// import { makeStyles } from '@material-ui/core/styles';
+// import AppBar from '@material-ui/core/AppBar';
+// import Toolbar from '@material-ui/core/Toolbar';
+// import Typography from '@material-ui/core/Typography';
+// import Button from '@material-ui/core/Button';
+// import IconButton from '@material-ui/core/IconButton';
+// import MenuIcon from '@material-ui/icons/Menu';
+
+import amber from '@material-ui/core/colors/amber';
+import NavBar from './components/NavBar';
+import SearchTrail from './components/Search/SearchTrail';
+
+
+const theme = createMuiTheme({
+  palette: {
+    primary:  {
+      main: '#8bc34a',
+    },
+    secondary: amber,
+  },
+  typography: {
+    useNextVariants: true,
+  },
+});
 
 
 class App extends Component {
 
-  
-
-  // componentDidMount = () => {
-  //   this.renderMap()
-  // }
-
-  // renderMap = () => {
-  //   loadScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyAp9bb1UC6TntWCOr_VwIQQk_TpKeQJSvo&callback=initMap")
-  //   window.initMap = this.initMap
-  // }
-
-  // initMap = () => {
-  //   const map = new window.google.maps.Map(document.getElementById('map'), {
-  //     center: {lat: -34.397, lng: 150.644},
-  //     zoom: 6
-  //   });
-
-    // var marker = new window.google.maps.Marker({position: uluru, map: map});
-  // }
-
     render() {
-    //    navigator.geolocation.getCurrentPosition(function(position) {
-    //   console.log(`lat:${position.coords.latitude}, lng: ${position.coords.longitude}`);
-    // })
 
   return (
-    <div className="App">
-      <MyMap />
 
-      {/* <div id="map"></div> */}
-    </div>
+    <Router>
+      <MuiThemeProvider theme={theme}>
+              <div className="App">
+        <NavBar />
+        <Route exact path="/SearchTrail" render={({ match }) => <SearchTrail match={match} />} />
+        <Route exact path="/map" render={({ match }) => <MyMap match={match} />} />
+
+      </div>
+      </MuiThemeProvider>
+</Router>
+
   );
 }
 
 }
-
-// const loadScript = function(url) {
-//   const index = window.document.getElementsByTagName("script")[0]
-//   const script = window.document.createElement("script")
-//   script.src = url
-//   script.async = true
-//   script.defer = true
-
-//   index.parentNode.insertBefore(script, index)
-// }
 
 export default App;
