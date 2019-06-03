@@ -3,9 +3,11 @@ const Schema = mongoose.Schema
 
 const userSchema = new Schema({
 name: String,
-coordinates: {}
+email: String,
+password: String,
+imgURL: String
 })
 
-const user = mongoose.model('user', userSchema)
+const user = mongoose.model('User', userSchema)
 
 module.exports = user

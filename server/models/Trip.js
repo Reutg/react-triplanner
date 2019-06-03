@@ -1,17 +1,35 @@
 const mongoose = require('mongoose')
-const Trail = require('./Trail')
-const Member = require('./Member')
+const Attraction = require('./Attraction')
+const User = require('./User')
 
 const Schema = mongoose.Schema
 
-const tripSchema = new Schema({
-name: String,
-trails: {type: mongoose.Schema.Types.ObjectId,
-    ref: Trail},
-members: {type: mongoose.Schema.Types.ObjectId,
-    ref: Member}
+const agendaSchema = new Schema({
+    day: Number,
+    trails: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Attraction'
+    }]
 })
 
-const trip = mongoose.model('trip', tripSchema)
+const tripSchema = new Schema({
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    name: String,
+    destination: String,
+    agenda: [agendaSchema],
+    members: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+    startDate: String,
+    endDate: String
+})
 
-module.exports = trip
+const Trip = mongoose.model('trip', tripSchema)
+
+const Agenda = mongoose.model('agenda', agendaSchema)
+
+module.exports = {Trip, Agenda}

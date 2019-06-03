@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 
 import { withStyles } from '@material-ui/core/styles';
-import { Input } from '@material-ui/core';
+import { Input, List, ListItem, IconButton, ListItemText, ListItemSecondaryAction } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 // const axios = require('axios')
 const apiKey = require('./config')
@@ -11,13 +12,31 @@ const styles = theme => ({
     container: {
         display: 'flex',
         flexWrap: 'wrap',
-        flexDirection: 'column'
+        flexDirection: 'row',
+        height: '100vh'
+    },
+    root: {
+        width: '95%',
+        backgroundColor: theme.palette.background.paper,
+        margin: theme.spacing(1)
     },
     input: {
         margin: theme.spacing(1),
-        width: '500px',
+        width: '90%',
         align: 'left'
-      }
+    },
+    title: {
+        textAlign: 'left',
+        width: '60%'
+    },
+    card: {
+        marginTop: '10px',
+        width: '95vw',
+        alignSelf: 'center'
+    },
+    list: {
+        width: '100%'
+    }
 });
 
 class MyMap extends Component {
@@ -26,7 +45,10 @@ class MyMap extends Component {
         this.state = {
             lat: "",
             lng: "",
-            map: ""
+            map: "",
+            location: "",
+            selection: "",
+            agenda: ["1", "2", "3"]
         }
     }
     componentDidMount = () => {
@@ -44,7 +66,7 @@ class MyMap extends Component {
     }
 
     renderMap = () => {
-        loadScript(`https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap&libraries=places`)
+        loadScript(`https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap&libraries=places&language=en`)
         window.initMap = this.initMap
     }
 
@@ -76,7 +98,7 @@ class MyMap extends Component {
             console.log(`New position - lat: ${dragLat}, lng: ${dragLng}`)
         });
 
-        window.google.maps.event.addListener(map,'click', (event) => {
+        window.google.maps.event.addListener(map, 'click', (event) => {
             let lat = event.latLng.lat()
             let lng = event.latLng.lng()
             let marker = new window.google.maps.Marker({
@@ -98,7 +120,7 @@ class MyMap extends Component {
         autocomplete.bindTo('bounds', map);
 
         autocomplete.setFields(
-            ['address_components', 'geometry', 'icon', 'name']);
+            ['address_components', 'geometry', 'icon', 'name', 'photos']);
         let infowindow = new window.google.maps.InfoWindow();
         const infowindowContent = document.getElementById('infowindow-content');
         infowindow.setContent(infowindowContent);
@@ -121,7 +143,26 @@ class MyMap extends Component {
             });
         });
 
-        
+        const request = {
+            placeId: 'ChIJN1t_tDeuEmsRUsoyG83frY4',
+            fields: ['name', 'formatted_address', 'place_id', 'geometry']
+        }
+
+        const service = new window.google.maps.places.PlacesService(map);
+
+        service.getDetails(request, function (place, status) {
+            if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+                var marker = new window.google.maps.Marker({
+                    map: map,
+                    position: place.geometry.location
+                });
+                window.google.maps.event.addListener(marker, 'click', function () {
+                    infowindow.open(map, this);
+                    console.log(place.name)
+                });
+            }
+        });
+
 
         autocomplete.addListener('place_changed', function () {
             infowindow.close();
@@ -136,7 +177,7 @@ class MyMap extends Component {
                 map.fitBounds(place.geometry.viewport);
             } else {
                 map.setCenter(place.geometry.location);
-                map.setZoom(17);  
+                map.setZoom(17);
             }
             searchMarker.setPosition(place.geometry.location);
             searchMarker.setVisible(true);
@@ -144,12 +185,18 @@ class MyMap extends Component {
             let address = '';
             if (place.address_components) {
                 address = [
-                    (place.address_components[0] & place.address_components[0].short_name || ''),
-                    (place.address_components[1] & place.address_components[1].short_name || ''),
-                    (place.address_components[2] & place.address_components[2].short_name || '')
+                    (place.address_components[0] && place.address_components[0].short_name || ''),
+                    (place.address_components[1] && place.address_components[1].short_name || ''),
+                    (place.address_components[2] && place.address_components[2].short_name || '')
                 ].join(' ');
+                console.log(place, address)
             }
 
+            if (place.photos) {
+                for (let i = 0; i < place.photos.length; i++) {
+                    console.log(place.photos[i].getUrl())
+                }
+            }
         });
 
         //add the coordinates of each trail
@@ -181,6 +228,10 @@ class MyMap extends Component {
             });
         }
     }
+    handleChange = event => {
+        let selection = event.target.value
+        this.setState({ selection })
+    };
 
     render() {
         const { classes } = this.props
@@ -195,7 +246,37 @@ class MyMap extends Component {
                         'aria-label': 'Description',
                     }}
                 />
-                    <div id="map" style={{ margin: '10px' }}></div>
+                <div id="map" style={{ margin: '10px' }}></div>
+
+                <div className={classes.list}>
+                    <List className={classes.root}>
+                        <ListItem>
+                            <ListItemText primary="location 1" />
+                            <ListItemSecondaryAction>
+                                <IconButton edge="end" aria-label="Delete">
+                                    <DeleteIcon />
+                                </IconButton>
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemText primary="location 2" />
+                            <ListItemSecondaryAction>
+                                <IconButton edge="end" aria-label="Delete">
+                                    <DeleteIcon />
+                                </IconButton>
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemText primary="location 3" />
+                            <ListItemSecondaryAction>
+                                <IconButton edge="end" aria-label="Delete">
+                                    <DeleteIcon />
+                                </IconButton>
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                    </List>
+
+                </div>
             </div>
         )
     }

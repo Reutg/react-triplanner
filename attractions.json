@@ -1,0 +1,85 @@
+[
+  {
+    "title": "Colosseum",
+    "description": "This huge Amphitheater is the largest of its kind ever built by the Roman Empire and has remained a model for sports facilities right up to modern times. Built as a venue for public spectacles and shows - even mock sea battles, it had a wooden floor that was 83 by 48 meters. Underneath it were two stories of tunnels, rooms, cells, and passages for gladiators, workers, wild animals, and storage. Today, the structure stands in stark contrast to the modern development that surrounds it and is a prominent reminder of ancient times and the extensive history of Rome.",
+    "startCoor": {
+      "lat": 41.88998,
+      "lng": 12.49426
+    },
+    "imgUrl": "https://www.planetware.com/photos-large/I/italy-colosseum-day.jpg",
+    "startTime": "08:00",
+    "endTime": "09:30"
+  },
+  {
+    "title": "Venice Canals",
+    "description": "A gondola ride through the canals of Venice is a tradition that travelers have been enjoying for centuries. Venice is a city of islands, and the canals have long been the city's main streets, connected by a labyrinth of narrow passageways. Lining the canals are old buildings that have remained relatively unchanged for hundreds of years, adding to the romantic charm. The Grand Canal is the most famous of these waterways and one of the most photographed sites in Venice. The best way to see many of the grand palaces, whose fronts face the water, is from a Vaporetto ride along the Grand Canal.",
+    "startCoor": {
+      "lat": 33.98265,
+      "lng": -118.46645
+    },
+    "imgUrl": "https://www.planetware.com/photos-large/I/italy-venice-canals.jpg",
+    "startTime": "10:15",
+    "endTime": "12:00"
+  },
+  {
+    "title": "Pompeii",
+    "description": "The still smoking volcano of Mt. Vesuvius looks down on the remains of the city it destroyed in AD 79. But that same eruption also preserved many of the city's art treasures: frescoes, mosaics, and sculptures that were encased in the lava as it cooled. Several centuries of excavations have revealed the remains of houses, markets, baths, temples, theaters, streets, and human remains. Visitors can tour the site, walk along the old streets scarred by the tracks of chariots, and see the engineering used by Romans more than 2,000 years ago.",
+    "startCoor": {
+      "lat": 40.753560,
+      "lng": 14.477130
+    },
+    "imgUrl": "https://www.planetware.com/photos-large/I/italy-pompeii-mt-vesuvius.jpg",
+    "startTime": "13:30",
+    "endTime": "15:30"
+  },
+  {
+    "title": "Leaning Tower of Pisa",
+    "description": "The still smoking volcano of Mt. Vesuvius looks down on the remains of the city it destroyed in AD 79. But that same eruption also preserved many of the city's art treasures: frescoes, mosaics, and sculptures that were encased in the lava as it cooled. Several centuries of excavations have revealed the remains of houses, markets, baths, temples, theaters, streets, and human remains. Visitors can tour the site, walk along the old streets scarred by the tracks of chariots, and see the engineering used by Romans more than 2,000 years ago.",
+    "startCoor": {
+      "lat": 43.723621,
+      "lng": 10.396640
+    },
+    "imgUrl": "https://www.planetware.com/photos-large/I/italy-leaning-tower-of-pisa.jpg",
+    "startTime": "08:00",
+    "endTime": "10:00"
+  },
+  {
+    "title": "Lake Como",
+    "description": "Lake Como is one of Italy's most scenic areas, surrounded by mountains and lined by small picturesque towns. A haunt of the wealthy since Roman times, the lake has many opulent villas and palaces along its wooded shores, many of them surrounded by gardens that are open to the public. The mild climate that makes the lake shore ideal for gardens is also a draw for tourists, with characteristics similar to that of the Mediterranean. Along with the resort towns around the lake, there's an 11th-century abbey.",
+    "startCoor": {
+      "lat": 46.0160486,
+      "lng": 9.257167600000002
+    },
+    "imgUrl": "https://www.planetware.com/photos-large/I/italy-lake-como-calm-water.jpg",
+    "startTime": "10:30",
+    "endTime": "11:45"
+  },
+  {
+    "title": "Amalfi Coast",
+    "description": "The Amalfi Coast, a UNESCO World Heritage Site, is a stunning stretch of coastline along the Sorrentine Peninsula, south of Naples and Sorrento. Hillside towns are built precariously along the steep mountainsides that cascade down to the sea. The main towns along here are Positano and Amalfi, with its colorfully domed cathedral. You can tour the coast by road or hop between towns by boat for different perspectives of the dramatic and almost vertical shore.",
+    "startCoor": {
+      "lat": 40.6333389,
+      "lng": 14.602896299999998
+    },
+    "imgUrl": "https://www.planetware.com/photos-large/I/italy-positano-cliff-wall.jpg",
+    "startTime": "12:00",
+    "endTime": "13:30"
+  },
+  {
+    "title": "Vatican City",
+    "description": "The Vatican is home to some of the world's most priceless art and art collections. The centerpiece is the great Basilica of St. Peter, with the tomb of St. Peter and one of Michelangelo's most poignant works, the Pieta. Outside is St. Peter's Square, where the Pope addresses followers. The Sistine Chapel is famous for its wall and ceiling paintings by Michelangelo, and in the Vatican Museum, you'll see works by many of Italy's other most famous artists.",
+    "startCoor": {
+      "lat": 41.90291599999999,
+      "lng": 12.453389000000016
+    },
+    "imgUrl": "https://www.planetware.com/photos-large/I/italy-vatican-city-evening.jpg",
+    "startTime": "14:00",
+    "endTime": "17:30"
+  }
+]
+
+
+
+
+
+

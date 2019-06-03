@@ -1,57 +1,70 @@
 const express = require('express')
 const request = require('request')
 const router = express.Router()
-const Client = require('../models/Client')
+const HikingTrail = require('../models/HikingTrail')
+const {Trip , Agenda} = require('../models/Trip')
+
 
 module.exports = router
 
-router.get('/clients', async (req, res) => {
-    const clients = await Client.find({})
-    res.send(clients)
+router.get('/hikingTrails' , async (req,res) => {
+    const hikingTrails = await HikingTrail.find({})
+    res.send(hikingTrails)
 })
 
-router.get('/actions', async (req, res) => {
-    const clients = (await Client.find({}))
-        .map(client => {
-            return {
-                clientID: client._id,
-                name: client.name,
-                owner: client.owner
-            }
-        })
+router.get('/trips/:ownerID', async (req,res) => {
+    let ownerID = req.params.ownerID
 
-    res.send(clients)
+    const trips = await Trip.find({owner: ownerID})
+    .populate(['members' , 'agenda.trails'])
+
+    res.send(trips)
 })
 
-router.post('/clients', async (req, res) => {
+
+router.get('/trip/:id' , async (req,res) => {
+    let id = req.params.id
+
+    const trip = await Trip.findOne({_id: id})
+    .populate(['members' , 'agenda.trails'])
+    res.send(trip)
+})
+
+router.get('/trip-members/:tripID', async (req,res) => {
+    let tripID = req.params.tripID
+
+    
+    const trip = await Trip.findOne({_id: tripID})
+    .populate('members')
+    
+      
+      res.send(trip.members)
+})
+
+router.post('/trip', async (req,res) => {
     let body = req.body
 
-    let client = new Client({
-        name: body.name + " " + body.surname,
-        email: null,
-        firstContact: new Date(),
-        emailType: null,
-        sold: false,
-        owner: body.owner,
-        country: body.country
+    let trip = new Trip({
+        owner: "5cf431891f20d35c7c3595df",
+        name: body.tripName,
+        destination: body.destination,
+        agenda: body.agenda,
+        members: body.memberID,
+        startDate: body.startDate,
+        endDate: body.endDate 
     })
 
-    await client.save()
-    res.send(client)
+    await trip.save()
+    res.send(trip)
 })
 
-router.put('/clients/:id', async (req, res) => {
-    let id = req.params.id
+router.put('/trip/:tripID', async (req,res) => {
+    let tripID = req.params.tripID
     let body = req.body
 
-    const updatedClient = await Client.findOneAndUpdate({ _id: id }, { name: body.name + " " + body.surname, country: body.country }, { new: true })
-    res.send(updatedClient)
-})
+    const trip = await Trip.findOne({ _id: tripID })
+    trip.agenda.push(body.day)
+    await trip.save()
+    res.send(trip)
 
-router.put('/actions/:name', async (req, res) => {
-    let name = req.params.name
-    let body = req.body
-
-    const updatedClient = await Client.findOneAndUpdate({ name: name }, { owner: body.owner, emailType: body.emailType, sold: true }, { new: true })
-    res.send(updatedClient)
 })
