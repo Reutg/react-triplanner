@@ -3,10 +3,9 @@ import React, { Component } from 'react'
 import { withStyles } from '@material-ui/core/styles';
 import { Input, List, ListItem, IconButton, ListItemText, ListItemSecondaryAction } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import SearchPlace from './SearchPlace';
 
 // const axios = require('axios')
-const apiKey = require('./config')
+const apiKey = require('../map/config')
 
 
 const styles = theme => ({
@@ -40,7 +39,7 @@ const styles = theme => ({
     }
 });
 
-class MyMap extends Component {
+class DayMAp extends Component {
     constructor() {
         super()
         this.state = {
@@ -164,7 +163,6 @@ class MyMap extends Component {
             }
         });
 
-
         autocomplete.addListener('place_changed', function () {
             infowindow.close();
             searchMarker.setVisible(false);
@@ -207,7 +205,7 @@ class MyMap extends Component {
             { lat: -18.142, lng: 178.431 },
             { lat: -27.467, lng: 153.027 }
         ]
-
+        console.log(this.state.trips)
         const poly = new window.google.maps.Polyline({
             path: polyPath,
             strokeColor: '#000000',
@@ -239,45 +237,7 @@ class MyMap extends Component {
 
         return (
             <div className={classes.container}>
-                {/* <Input
-                    placeholder="Enter location"
-                    id="places-search"
-                    className={classes.input}
-                    inputProps={{
-                        'aria-label': 'Description',
-                    }}
-                /> */}
-                <SearchPlace />
                 <div id="map" style={{ margin: '10px' }}></div>
-
-                <div className={classes.list}>
-                    <List className={classes.root}>
-                        <ListItem>
-                            <ListItemText primary="location 1" />
-                            <ListItemSecondaryAction>
-                                <IconButton edge="end" aria-label="Delete">
-                                    <DeleteIcon />
-                                </IconButton>
-                            </ListItemSecondaryAction>
-                        </ListItem>
-                        <ListItem>
-                            <ListItemText primary="location 2" />
-                            <ListItemSecondaryAction>
-                                <IconButton edge="end" aria-label="Delete">
-                                    <DeleteIcon />
-                                </IconButton>
-                            </ListItemSecondaryAction>
-                        </ListItem>
-                        <ListItem>
-                            <ListItemText primary="location 3" />
-                            <ListItemSecondaryAction>
-                                <IconButton edge="end" aria-label="Delete">
-                                </IconButton>
-                            </ListItemSecondaryAction>
-                        </ListItem>
-                    </List>
-
-                </div>
             </div>
         )
     }
@@ -293,4 +253,4 @@ const loadScript = function (url) {
     index.parentNode.insertBefore(script, index)
 }
 
-export default withStyles(styles)(MyMap);
+export default withStyles(styles)(DayMAp);

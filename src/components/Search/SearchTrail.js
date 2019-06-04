@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { withStyles } from '@material-ui/core/styles';
 import { TextField, InputLabel, Select, MenuItem, FormControl, Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
+import SearchPlace from '../map/SearchPlace';
+import DayMap from '../trip/DayMap';
 
 
 const styles = theme => ({
@@ -50,15 +52,8 @@ class SearchTrail extends Component {
 
         return (
         <div>
-    <form className={classes.container} noValidate autoComplete="off">
-      <TextField
-        id="standard-name"
-        label="Enter country, city or trail name"
-        className={classes.textField}
-        // value={values.name}
-        // onChange={handleChange('name')}
-        margin="normal"
-      />
+    {/* <form className={classes.container} noValidate autoComplete="off">
+     <SearchPlace />
 
       <FormControl className={classes.formControl}>
         <InputLabel>Difficulty level</InputLabel>
@@ -77,11 +72,13 @@ class SearchTrail extends Component {
           <MenuItem value={30}>Hard</MenuItem>
         </Select>
       </FormControl>
-      </form>
+      </form> */}
 
-      <Button variant="contained" color="primary" className={classes.button}>
+      {/* <SearchPlace /> */}
+      <DayMap />
+      {/* <Button variant="contained" color="primary" className={classes.button}>
         Search
-      </Button>
+      </Button> */}
         </div>
         )
     }

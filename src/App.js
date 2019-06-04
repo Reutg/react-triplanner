@@ -9,7 +9,8 @@ import MyMap from './components/map/MyMap';
 import amber from '@material-ui/core/colors/amber';
 import NavBar from './components/NavBar';
 import SearchTrail from './components/Search/SearchTrail';
-import Trip from './components/Trip';
+import Trip from './components/trip/Trip';
+import DayMap from './components/trip/DayMap';
 const apiKey = require('./components/map/config')
 
 const theme = createMuiTheme({
@@ -27,7 +28,9 @@ const theme = createMuiTheme({
 
 class App extends Component {
 
-
+  componentDidMount = () => {
+    this.rendeSearch()
+  }
 
   rendeSearch = () => {
     loadScript(`https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap&libraries=places&language=en`)
@@ -44,14 +47,13 @@ class App extends Component {
             <Route exact path="/SearchTrail" render={({ match }) => <SearchTrail match={match} />} />
             <Route exact path="/map" render={({ match }) => <MyMap match={match} />} />
             <Route exact path="/trip" render={({ match }) => <Trip match={match} />} />
-
+            <Route exaxt path="/dayMap" render={({ match }) => <DayMap match={match} />} />
           </div>
         </MuiThemeProvider>
       </Router>
 
-    );
+    );  
   }
-
 }
 
 const loadScript = function (url) {

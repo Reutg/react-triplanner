@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Typography, Avatar, Grid } from '@material-ui/core';
+import { Typography, Avatar, Grid, IconButton } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 import Divider from '@material-ui/core/Divider';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
@@ -9,6 +9,12 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
+import MapIcon from '@material-ui/icons/Map';
+import ViewListIcon from '@material-ui/icons/ViewList';
+import { Link } from 'react-router-dom';
+
+
+
 
 const axios = require('axios')
 
@@ -65,8 +71,14 @@ const styles = theme => ({
     fontSize: 14,
     textAlign: 'left'
   },
-  ExpansionPanel: {
-    display: 'flex'
+  expansionPanel: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  icon: {
+    alignSelf: 'start',
+    marginBottom: '5px'
   }
 });
 
@@ -92,11 +104,11 @@ class Trip extends Component {
 
   getTripMembers = async () => {
     let members = this.state.trips[0].members
-    this.setState({members})
+    this.setState({ members })
   }
 
   getTripAgenda = () => {
-    let {trips}  = this.state
+    let { trips } = this.state
     let agenda = trips[0].agenda
 
     this.setState({ agenda })
@@ -128,68 +140,33 @@ class Trip extends Component {
               <Avatar alt={member.name} src={member.imgURL} className={classes.avatar} />
             )}
           </Grid>
-            {this.state.agenda.map(day => 
-          <ExpansionPanel>
-            <ExpansionPanelSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
-            >
-              <Typography className={classes.heading}>Day {day.day}</Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-              <Typography>
-              {day.trails.map(trail => 
-                <Card className={classes.card} style={{ backgroundImage: `url(${trail.imgUrl})` }} >
-                  <CardContent>
-                    <Typography className={classes.title} color="textSecondary" gutterBottom>
-                      <span className={classes.time}> {trail.startTime} - {trail.endTime}</span> - <span className={classes.trailTitle}>{trail.title}</span>
-                    </Typography>
-                  </CardContent>
-                  <CardActions>
-                  </CardActions>
-                </Card>
-                
-                )}
-
-              </Typography>
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
-              )} 
-        
-          {/* 
+          {this.state.agenda.map(day =>
             <ExpansionPanel>
-            <ExpansionPanelSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-            >
-              <Typography className={classes.heading}>Day 2</Typography>
+              <ExpansionPanelSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <Typography className={classes.heading}>Day {day.day}</Typography>
               </ExpansionPanelSummary>
-              <ExpansionPanelDetails>
-              <Typography>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-                sit amet blandit leo lobortis eget.
+              <ExpansionPanelDetails className={classes.expansionPanel}>
+                <Link to="/dayMap" style={{ textDecoration: 'none', color: 'black', margin: '5px'}}>Map view</Link>
+                <Typography>
+                  {day.trails.map(trail =>
+                    <Card className={classes.card} style={{ backgroundImage: `url(${trail.imgUrl})` }} >
+                      <CardContent>
+                        <Typography className={classes.title} color="textSecondary" gutterBottom>
+                          <span className={classes.time}> {trail.startTime} - {trail.endTime}</span> - <span className={classes.trailTitle}>{trail.title}</span>
+                        </Typography>
+                      </CardContent>
+                      <CardActions>
+                      </CardActions>
+                    </Card>
+                  )}
                 </Typography>
-                </ExpansionPanelDetails>
-          </ExpansionPanel>
-          
-          <ExpansionPanel>
-          <ExpansionPanelSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
-          >
-          <Typography className={classes.heading}>Day 3</Typography>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
-          <Typography>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-          sit amet blandit leo lobortis eget.
-          </Typography>
-          </ExpansionPanelDetails>
-        </ExpansionPanel> */}
-
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
+          )}
         </div>
       )
     )
