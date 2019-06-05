@@ -52,8 +52,10 @@ class MyMap extends Component {
             agenda: ["1", "2", "3"]
         }
     }
+
     componentDidMount = () => {
         this.getUserCoor()
+        this.initMap()
     }
 
     getUserCoor = () => {
@@ -61,17 +63,19 @@ class MyMap extends Component {
             const lat = position.coords.latitude
             const lng = position.coords.longitude
             this.setState({ lat, lng }, () => {
-                this.renderMap()
+                // this.renderMap()
+                this.initMap()
             })
         })
     }
 
     renderMap = () => {
         // loadScript(`https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap&libraries=places&language=en`)
-        window.initMap = this.initMap
+        // window.initMap = this.initMap
     }
 
     initMap = () => {
+        // if (!window.google) { return }
 
         const map = new window.google.maps.Map(document.getElementById('map'), {
             center: { lat: this.state.lat, lng: this.state.lng },
@@ -186,9 +190,9 @@ class MyMap extends Component {
             let address = '';
             if (place.address_components) {
                 address = [
-                    (place.address_components[0] && place.address_components[0].short_name || ''),
-                    (place.address_components[1] && place.address_components[1].short_name || ''),
-                    (place.address_components[2] && place.address_components[2].short_name || '')
+                    (place.address_components[0] ? place.address_components[0].short_name : ''),
+                    (place.address_components[1] ? place.address_components[1].short_name : ''),
+                    (place.address_components[2] ? place.address_components[2].short_name : '')
                 ].join(' ');
                 console.log(place, address)
             }
@@ -283,14 +287,5 @@ class MyMap extends Component {
     }
 }
 
-const loadScript = function (url) {
-    const index = window.document.getElementsByTagName("script")[0]
-    const script = window.document.createElement("script")
-    script.src = url
-    script.async = true
-    script.defer = true
-
-    index.parentNode.insertBefore(script, index)
-}
 
 export default withStyles(styles)(MyMap);

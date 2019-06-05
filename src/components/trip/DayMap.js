@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 
 import { withStyles } from '@material-ui/core/styles';
-import { Input, List, ListItem, IconButton, ListItemText, ListItemSecondaryAction } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
+import { List, ListItem, ListItemText, ListItemSecondaryAction, Typography, ListItemIcon } from '@material-ui/core';
+import PlaceIcon from '@material-ui/icons/Place';
 
 // const axios = require('axios')
 const apiKey = require('../map/config')
@@ -26,8 +26,9 @@ const styles = theme => ({
         align: 'left'
     },
     title: {
-        textAlign: 'left',
-        width: '60%'
+        textAlign: 'center',
+        width: '100%',
+        fontSize: '20px'
     },
     card: {
         marginTop: '10px',
@@ -35,222 +36,148 @@ const styles = theme => ({
         alignSelf: 'center'
     },
     list: {
-        width: '100%'
+        width: '100%',
+        height: '100%'
+    },
+    listIcon: {
+        minWidth: '30px'
     }
 });
 
-class DayMAp extends Component {
+class DayMap extends Component {
     constructor() {
         super()
         this.state = {
             lat: "",
-            lng: "",
-            map: "",
-            location: "",
-            selection: "",
-            agenda: ["1", "2", "3"]
+            lng: ""
         }
-    }
-    componentDidMount = () => {
-        this.getUserCoor()
-    }
-
-    getUserCoor = () => {
-        navigator.geolocation.getCurrentPosition((position) => {
-            const lat = position.coords.latitude
-            const lng = position.coords.longitude
-            this.setState({ lat, lng }, () => {
-                this.renderMap()
-            })
-        })
     }
 
     renderMap = () => {
         // loadScript(`https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap&libraries=places&language=en`)
-        window.initMap = this.initMap
+        // window.initMap = this.initMap
     }
 
     initMap = () => {
+        const mapEl = document.getElementById('map');
 
-        const map = new window.google.maps.Map(document.getElementById('map'), {
-            center: { lat: this.state.lat, lng: this.state.lng },
-            zoom: 15,
+        if (!this.props.trips[0] || !mapEl) {
+            setTimeout(() => this.initMap(), 100)
+
+            return
+        }
+        const day = +this.props.match.params.day - 1
+        let firstTrailStart = this.props.trips[0].agenda[day].trails[0].startCoor
+
+        const directionsService = new window.google.maps.DirectionsService;
+        const directionsDisplay = new window.google.maps.DirectionsRenderer;
+
+        const map = new window.google.maps.Map(mapEl, {
+            center: firstTrailStart,
+            zoom: 10,
             disableDefaultUI: true,
             zoomControl: true,
             streetViewControl: true,
             fullscreenControl: true
         });
 
-        const marker = new window.google.maps.Marker({
-            position: { lat: this.state.lat, lng: this.state.lng },
-            map: map,
-            draggable: true,
-            animation: window.google.maps.Animation.DROP,
-            icon: 'https://www.google.com/mapfiles/arrow.png',
-        });
-        console.log(`current position - lat: ${this.state.lat}, lng:${this.state.lng}`)
-
-        let dragLat
-        let dragLng
-        window.google.maps.event.addListener(marker, 'dragend', () => {
-            dragLat = marker.getPosition().lat()
-            dragLng = marker.getPosition().lng()
-            console.log(`New position - lat: ${dragLat}, lng: ${dragLng}`)
-        });
-
-        window.google.maps.event.addListener(map, 'click', (event) => {
-            let lat = event.latLng.lat()
-            let lng = event.latLng.lng()
-            let marker = new window.google.maps.Marker({
-                position: { lat, lng },
-                map: map,
-                draggable: true,
-                animation: window.google.maps.Animation.DROP
-            })
-            window.google.maps.event.addListener(marker, 'dragend', () => {
-                dragLat = marker.getPosition().lat()
-                dragLng = marker.getPosition().lng()
-                console.log(`New position - lat: ${dragLat}, lng: ${dragLng}`)
-            });
-            console.log("New marker - lat: " + event.latLng.lat() + ", lng: " + event.latLng.lng())
-        });
-
-        let input = document.getElementById('places-search');
-        let autocomplete = new window.google.maps.places.Autocomplete(input);
-        autocomplete.bindTo('bounds', map);
-
-        autocomplete.setFields(
-            ['address_components', 'geometry', 'icon', 'name', 'photos']);
-        let infowindow = new window.google.maps.InfoWindow();
-        const infowindowContent = document.getElementById('infowindow-content');
-        infowindow.setContent(infowindowContent);
-        const searchMarker = new window.google.maps.Marker({
-            map: map,
-            anchorPoint: new window.google.maps.Point(0, -29),
-            draggable: true,
-            animation: window.google.maps.Animation.DROP
-        });
-
-        window.google.maps.event.addListener(searchMarker, 'click', () => {
-            let clickLat = searchMarker.getPosition().lat()
-            let clickLng = searchMarker.getPosition().lng()
-            console.log(`marker - lat: ${clickLat}, lng: ${clickLng}`)
-
-            window.google.maps.event.addListener(searchMarker, 'dragend', () => {
-                dragLat = searchMarker.getPosition().lat()
-                dragLng = searchMarker.getPosition().lng()
-                console.log(`New position - lat: ${dragLat}, lng: ${dragLng}`)
-            });
-        });
-
-        const request = {
-            placeId: 'ChIJN1t_tDeuEmsRUsoyG83frY4',
-            fields: ['name', 'formatted_address', 'place_id', 'geometry']
-        }
-
-        const service = new window.google.maps.places.PlacesService(map);
-
-        service.getDetails(request, function (place, status) {
-            if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-                var marker = new window.google.maps.Marker({
-                    map: map,
-                    position: place.geometry.location
-                });
-                window.google.maps.event.addListener(marker, 'click', function () {
-                    infowindow.open(map, this);
-                    console.log(place.name)
-                });
-            }
-        });
-
-        autocomplete.addListener('place_changed', function () {
-            infowindow.close();
-            searchMarker.setVisible(false);
-            const place = autocomplete.getPlace();
-            if (!place.geometry) {
-                window.alert("No details available for input: '" + place.name + "'");
-                return;
-            }
-
-            if (place.geometry.viewport) {
-                map.fitBounds(place.geometry.viewport);
-            } else {
-                map.setCenter(place.geometry.location);
-                map.setZoom(17);
-            }
-            searchMarker.setPosition(place.geometry.location);
-            searchMarker.setVisible(true);
-
-            let address = '';
-            if (place.address_components) {
-                address = [
-                    (place.address_components[0] && place.address_components[0].short_name || ''),
-                    (place.address_components[1] && place.address_components[1].short_name || ''),
-                    (place.address_components[2] && place.address_components[2].short_name || '')
-                ].join(' ');
-                console.log(place, address)
-            }
-
-            if (place.photos) {
-                for (let i = 0; i < place.photos.length; i++) {
-                    console.log(place.photos[i].getUrl())
-                }
-            }
-        });
-
-        //add the coordinates of each trail
-        let polyPath = [
-            { lat: 37.772, lng: -122.214 },
-            { lat: 21.291, lng: -157.821 },
-            { lat: -18.142, lng: 178.431 },
-            { lat: -27.467, lng: 153.027 }
-        ]
-        console.log(this.state.trips)
-        const poly = new window.google.maps.Polyline({
-            path: polyPath,
-            strokeColor: '#000000',
-            strokeOpacity: 1.0,
-            strokeWeight: 3
-        });
-        poly.setMap(map);
-
-        map.addListener('click', this.addLatLng);
-        window.google.maps.eventaddLatLng = (event) => {
-            const path = poly.getPath();
-
-            path.push(event.latLng);
-
-            const marker3 = new window.google.maps.Marker({
-                position: event.latLng,
-                title: '#' + path.getLength(),
-                map: map
-            });
-        }
+        directionsDisplay.setMap(map);
+        this.calculateAndDisplayRoute(directionsService, directionsDisplay)
     }
-    handleChange = event => {
-        let selection = event.target.value
-        this.setState({ selection })
-    };
 
-    render() {
+    calculateAndDisplayRoute = (directionsService, directionsDisplay) => {
+        const day = +this.props.match.params.day - 1
+        let firstTrailStart = this.props.trips[0].agenda[day].trails[0].startCoor
+        let lastTrailPoint = this.props.trips[0].agenda[day].trails[this.props.trips[0].agenda[day].trails.length - 1].startCoor
+
+        let waypts = []
+        if (this.props.trips[0].agenda[day].trails.length >= 3) {
+            let trailsArr = this.props.trips[0].agenda[day].trails
+            let wayptsArr = trailsArr.slice(1, trailsArr.length - 1)
+            waypts.push({ location: trailsArr[1].startCoor })
+            console.log(wayptsArr)
+        }
+
+        directionsService.route({
+            origin: firstTrailStart,
+            destination: lastTrailPoint,
+            waypoints: waypts,
+            optimizeWaypoints: true,
+            travelMode: 'DRIVING'
+        }, function (response, status) {
+            if (status === 'OK') {
+                directionsDisplay.setDirections(response);
+                const route = response.routes[0];
+                //     var summaryPanel = document.getElementById('directions-panel');
+                //     summaryPanel.innerHTML = '';
+                //     // For each route, display summary information.
+                for (let i = 0; i < route.legs.length; i++) {
+                    // const routeSegment = i + 1;
+                    // summaryPanel.innerHTML += '<b>Route Segment: ' + routeSegment +
+                    //     '</b><br>';
+                    // summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
+                    // summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
+                    // summaryPanel.innerHTML += route.legs[i].distance.text + '<br><br>';
+                    console.log(route.legs[i])
+                }
+                // } else {
+                //     window.alert('Directions request failed due to ' + status);
+            }
+        });
+
+    }
+
+    getTrailsPerDay = async () => {
+        const day = +this.props.match.params.day - 1
+        let trails = await this.props.trips[0].agenda[day].trails
+
+        this.setState({ trails })
+    }
+
+    renderTrails(trips) {
+        if (!trips || !trips[0]) {
+            return
+        }
+
         const { classes } = this.props
+        const day = +this.props.match.params.day - 1
 
         return (
+            <List className={classes.root}>
+                {trips[0].agenda[day].trails.map(trail =>
+                    <ListItem>
+                        <ListItemIcon className={classes.listIcon}>
+                            <PlaceIcon />  
+                        </ListItemIcon>
+                        <ListItemText primary={trail.title} />
+                        <ListItemSecondaryAction>
+                        </ListItemSecondaryAction>
+                    </ListItem>
+                )}
+            </List>
+        )
+    }
+
+    render() {
+        this.initMap()
+        const { classes } = this.props
+        const { trips } = this.props
+        console.log(this.props.match.params.day)
+        return (
             <div className={classes.container}>
+                <div className={classes.root}>
+                    <Typography className={classes.title} component="h2">
+                        Trip day #{this.props.match.params.day}
+                    </Typography>
+                </div>
                 <div id="map" style={{ margin: '10px' }}></div>
+
+                <div className={classes.list}>
+                    {this.renderTrails(trips)}
+                </div>
             </div>
         )
     }
 }
 
-const loadScript = function (url) {
-    const index = window.document.getElementsByTagName("script")[0]
-    const script = window.document.createElement("script")
-    script.src = url
-    script.async = true
-    script.defer = true
-
-    index.parentNode.insertBefore(script, index)
-}
-
-export default withStyles(styles)(DayMAp);
+export default withStyles(styles)(DayMap);

@@ -9,15 +9,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import MapIcon from '@material-ui/icons/Map';
-import ViewListIcon from '@material-ui/icons/ViewList';
 import { Link } from 'react-router-dom';
-
-
-
-
-const axios = require('axios')
-
 
 const styles = theme => ({
   root: {
@@ -83,92 +75,69 @@ const styles = theme => ({
 });
 
 class Trip extends Component {
-  constructor() {
-    super()
-    this.state = {
-      trips: [],
-      ownerID: "5cf431891f20d35c7c3595df",
-      members: [],
-      agenda: []
-    }
-  }
-  componentDidMount = async () => {
-    let { ownerID } = this.state
-
-    let trips = await axios.get(`http://localhost:4000/trips/${ownerID}`)
-    this.setState({ trips: trips.data })
-
-    this.getTripMembers()
-    this.getTripAgenda()
-  }
-
-  getTripMembers = async () => {
-    let members = this.state.trips[0].members
-    this.setState({ members })
-  }
-
-  getTripAgenda = () => {
-    let { trips } = this.state
-    let agenda = trips[0].agenda
-
-    this.setState({ agenda })
-  }
+  // constructor() {
+  //   super()
+  //   this.state = {
+  //     trips: [],
+  //     ownerID: "5cf431891f20d35c7c3595df",
+  //     members: [],
+  //     agenda: []
+  //   }
+  // }
 
   render() {
     const { classes } = this.props
 
-    const { trips } = this.state
-    console.log(trips[0])
+    const { trips } = this.props
+    // console.log(trips[0])
+
+    if (!trips[0]) { return (<React.Fragment />) }
 
     return (
-      this.state.trips.map(trip =>
-        <div className={classes.root}>
-          <Typography className={classes.header} variant="h5" component="h2" gutterBottom>
-            {trip.name}
-          </Typography>
-          <Typography className={classes.subHeader} variant="h6" component="h2" gutterBottom>
-            {trip.destination}, {trip.startDate} - {trip.endDate}
-          </Typography>
-
-          <Divider />
-
-          <Typography className={classes.simpleText} variant="subtitle1" component="h2" gutterBottom>
-            Traveling with me:
+      <div className={classes.root}>
+        <Typography className={classes.header} variant="h5" component="h2" gutterBottom>
+          {trips[0].name}
         </Typography>
-          <Grid container justify="center" alignItems="center">
-            {this.state.members.map(member =>
-              <Avatar alt={member.name} src={member.imgURL} className={classes.avatar} />
-            )}
-          </Grid>
-          {this.state.agenda.map(day =>
-            <ExpansionPanel>
-              <ExpansionPanelSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1a-content"
-                id="panel1a-header"
-              >
-                <Typography className={classes.heading}>Day {day.day}</Typography>
-              </ExpansionPanelSummary>
-              <ExpansionPanelDetails className={classes.expansionPanel}>
-                <Link to="/dayMap" style={{ textDecoration: 'none', color: 'black', margin: '5px'}}>Map view</Link>
-                <Typography>
-                  {day.trails.map(trail =>
-                    <Card className={classes.card} style={{ backgroundImage: `url(${trail.imgUrl})` }} >
-                      <CardContent>
-                        <Typography className={classes.title} color="textSecondary" gutterBottom>
-                          <span className={classes.time}> {trail.startTime} - {trail.endTime}</span> - <span className={classes.trailTitle}>{trail.title}</span>
-                        </Typography>
-                      </CardContent>
-                      <CardActions>
-                      </CardActions>
-                    </Card>
-                  )}
-                </Typography>
-              </ExpansionPanelDetails>
-            </ExpansionPanel>
+        <Typography className={classes.subHeader} variant="h6" component="h2" gutterBottom>
+          {trips[0].destination}, {trips[0].startDate} - {trips[0].endDate}
+        </Typography>
+
+        <Divider />
+
+        <Typography className={classes.simpleText} variant="subtitle1" component="h2" gutterBottom>
+          Traveling with me:
+        </Typography>
+        <Grid container justify="center" alignItems="center">
+          {trips[0].members.map(member =>
+            <Avatar key={member.name} alt={member.name} src={member.imgURL} className={classes.avatar} />
           )}
-        </div>
-      )
+        </Grid>
+        {trips[0].agenda.map(day =>
+          <ExpansionPanel key={day.day}>
+            <ExpansionPanelSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+              <Typography className={classes.heading}>Day {day.day}</Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails className={classes.expansionPanel}>
+              <Link to={`/dayMap/${day.day}`} style={{ textDecoration: 'none', color: 'black', margin: '5px' }}>Map view</Link>
+              {day.trails.map(trail =>
+                <Card key={trail._id} className={classes.card} style={{ backgroundImage: `url(${trail.imgUrl})` }} >
+                  <CardContent>
+                    <Typography className={classes.title} color="textSecondary" gutterBottom>
+                      <span className={classes.time}> {trail.startTime} - {trail.endTime}</span> - <span className={classes.trailTitle}>{trail.title}</span>
+                    </Typography>
+                  </CardContent>
+                  <CardActions>
+                  </CardActions>
+                </Card>
+              )}
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+        )}
+      </div>
     )
   }
 }
