@@ -11,13 +11,14 @@ import NavBar from './components/NavBar';
 import SearchTrail from './components/Search/SearchTrail';
 import Trip from './components/trip/Trip';
 import DayMap from './components/trip/DayMap';
+import PackingList from './components/trip/PackingList';
 const apiKey = require('./components/map/config')
 const axios = require('axios')
 
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#8bc34a',
+      main: '#0097a7',
     },
     secondary: amber,
   },
@@ -48,21 +49,7 @@ class App extends Component {
     let trips = await axios.get(`http://localhost:4000/trips/${ownerID}`)
     this.setState({ trips: trips.data })
     
-    // this.getTripMembers()
-    // this.getTripAgenda()
   }
-
-  // getTripMembers = async () => {
-  //   let members = this.state.trips[0].members
-  //   this.setState({ members })
-  // }
-
-  // getTripAgenda = () => {
-  //   let { trips } = this.state
-  //   let agenda = trips[0].agenda
-
-  //   this.setState({ agenda })
-  // }
 
   renderSearch = () => {
     // loadScript(`https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&language=en`)
@@ -78,8 +65,9 @@ class App extends Component {
             <NavBar />
             <Route exact path="/SearchTrail" render={({ match }) => <SearchTrail match={match} />} />
             <Route exact path="/map" render={({ match }) => <MyMap match={match} />} />
-            <Route exact path="/trip" render={({ match }) => <Trip match={match} trips={this.state.trips} />} />
+            <Route exact path="/" render={({ match }) => <Trip match={match} trips={this.state.trips} />} />
             <Route exaxt path="/dayMap/:day" render={({ match }) => <DayMap match={match} trips={this.state.trips} />} />
+            <Route exaxt path="/packingList" render={({ match }) => <PackingList match={match} trips={this.state.trips} />} />
           </div>
         </MuiThemeProvider>
       </Router>

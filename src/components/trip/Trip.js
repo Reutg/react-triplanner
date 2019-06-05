@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Typography, Avatar, Grid, IconButton } from '@material-ui/core';
+import { Typography, Avatar, Grid, IconButton, Icon, DialogActions, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, Button, Chip } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 import Divider from '@material-ui/core/Divider';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
@@ -10,6 +10,21 @@ import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import { Link } from 'react-router-dom';
+import FormatListBulletedIcon from '@material-ui/icons/List';
+import FlightIcon from '@material-ui/icons/Flight';
+import HotelIcon from '@material-ui/icons/Hotel';
+import AddIcon from '@material-ui/icons/Add';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
+
+
+
+import Fab from '@material-ui/core/Fab';
+
 
 const styles = theme => ({
   root: {
@@ -39,7 +54,7 @@ const styles = theme => ({
   heading: {
     fontSize: theme.typography.pxToRem(15),
     fontWeight: theme.typography.fontWeightRegular,
-    color: '#32722f'
+    color: '#0097a7'
   },
   card: {
     width: '90vw',
@@ -59,9 +74,10 @@ const styles = theme => ({
     color: 'white',
     fontWeight: 'bold'
   },
-  time: {
+  trailText: {
     fontSize: 14,
-    textAlign: 'left'
+    textAlign: 'left',
+    backgroundColor: 'grey'
   },
   expansionPanel: {
     display: 'flex',
@@ -69,27 +85,63 @@ const styles = theme => ({
     alignItems: 'center'
   },
   icon: {
-    alignSelf: 'start',
-    marginBottom: '5px'
+    margin: '10px',
+    fontSize: '25px'
+  },
+  fab: {
+    position: 'absolute',
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
+  },
+  avatarPurple: {
+    margin: 10,
+    color: '#fff',
+    backgroundColor: '#00838f'
+  },
+  avatarBlue: {
+    margin: 10,
+    color: '#fff',
+    backgroundColor: '#00838f'
+  },
+  avatarGreen: {
+    margin: 10,
+    color: '#fff',
+    backgroundColor: '#00838f'
+  },
+  chip: {
+    margin: theme.spacing(1),
   }
 });
 
 class Trip extends Component {
-  // constructor() {
-  //   super()
-  //   this.state = {
-  //     trips: [],
-  //     ownerID: "5cf431891f20d35c7c3595df",
-  //     members: [],
-  //     agenda: []
-  //   }
-  // }
+  constructor() {
+    super()
+    this.state = {
+      isDialofOpen: false,
+      selectedDate: new Date()
+    }
+  }
+  handleClickOpen = () => {
+
+    const { isDialofOpen } = this.state
+
+    this.setState({ isDialofOpen: true })
+  }
+  handleClose = () => {
+    const { isDialofOpen } = this.state
+    this.setState({ isDialofOpen: false })
+
+  }
+
+  handleDateChange = (date) => {
+    let { selectedDate } = this.state
+    this.setState({ selectedDate: date })
+  }
 
   render() {
     const { classes } = this.props
 
     const { trips } = this.props
-    // console.log(trips[0])
 
     if (!trips[0]) { return (<React.Fragment />) }
 
@@ -109,9 +161,34 @@ class Trip extends Component {
         </Typography>
         <Grid container justify="center" alignItems="center">
           {trips[0].members.map(member =>
-            <Avatar key={member.name} alt={member.name} src={member.imgURL} className={classes.avatar} />
+          <Chip
+          avatar={<Avatar key={member.name} alt={member.name} src={member.imgURL} className={classes.avatar} />}
+          label={member.name} className={classes.chipLabel}
+          clickable
+          className={classes.chip}
+          variant="outlined"
+        />
           )}
         </Grid>
+        <Typography className={classes.simpleText} variant="subtitle1" component="h2">
+          Trip info:
+        </Typography>
+        <Grid container justify="center" alignItems="center">
+        <Link to={`/packingList`} style={{ textDecoration: 'none', margin: '5px', alignSelf: 'start' }}>
+          <Avatar className={classes.avatarPurple}>
+            <FormatListBulletedIcon className={classes.icon} />
+          </Avatar>
+        </Link>
+          <Avatar className={classes.avatarBlue}>
+            <FlightIcon className={classes.icon} />
+          </Avatar>
+          <Avatar className={classes.avatarGreen}>
+            <HotelIcon className={classes.icon} />
+          </Avatar>
+        </Grid>
+        <Typography className={classes.simpleText} variant="subtitle1" component="h2">
+          Agenda:
+        </Typography>
         {trips[0].agenda.map(day =>
           <ExpansionPanel key={day.day}>
             <ExpansionPanelSummary
@@ -122,18 +199,62 @@ class Trip extends Component {
               <Typography className={classes.heading}>Day {day.day}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails className={classes.expansionPanel}>
-              <Link to={`/dayMap/${day.day}`} style={{ textDecoration: 'none', color: 'black', margin: '5px' }}>Map view</Link>
+              <Link to={`/dayMap/${day.day}`} style={{ textDecoration: 'none', color: '#006064', margin: '5px', alignSelf: 'start' }}>Map view</Link>
               {day.trails.map(trail =>
                 <Card key={trail._id} className={classes.card} style={{ backgroundImage: `url(${trail.imgUrl})` }} >
                   <CardContent>
                     <Typography className={classes.title} color="textSecondary" gutterBottom>
-                      <span className={classes.time}> {trail.startTime} - {trail.endTime}</span> - <span className={classes.trailTitle}>{trail.title}</span>
+                      <span className={classes.trailText}> {trail.startTime} - {trail.endTime}</span> - <span className={classes.trailText}>{trail.title}</span>
                     </Typography>
                   </CardContent>
                   <CardActions>
                   </CardActions>
                 </Card>
               )}
+              <Fab color="primary" size="small" aria-label="Add" className={classes.fab} onClick={this.handleClickOpen}>
+                <AddIcon />
+              </Fab>
+              <Dialog open={this.state.isDialofOpen} onClose={this.handleClose} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title">Add new</DialogTitle>
+                <DialogContent>
+                  <DialogContentText>
+                    Add another attraction
+                </DialogContentText>
+                  <TextField
+                    autoFocus
+                    margin="dense"
+                    id="name"
+                    label="Title"
+                    type="text"
+                    fullWidth
+                  />
+                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <Grid container className={classes.grid} justify="space-around">
+                      <KeyboardDatePicker
+                        margin="normal"
+                        label="Date picker"
+                        value={this.state.selectedDate}
+                        onChange={this.handleDateChange}
+                      />
+                      <KeyboardTimePicker
+                        margin="normal"
+                        label="Time picker"
+                        value={this.state.selectedDate}
+                        onChange={this.handleDateChange}
+                      />
+                    </Grid>
+                  </MuiPickersUtilsProvider>
+
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={this.handleClose} color="primary">
+                    Cancel
+          </Button>
+                  <Button onClick={this.handleClose} color="primary">
+                    Create
+          </Button>
+                </DialogActions>
+              </Dialog>
             </ExpansionPanelDetails>
           </ExpansionPanel>
         )}

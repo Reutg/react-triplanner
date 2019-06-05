@@ -3,6 +3,8 @@ import React, { Component } from 'react'
 import { withStyles } from '@material-ui/core/styles';
 import { Input, List, ListItem, IconButton, ListItemText, ListItemSecondaryAction } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
+import AddIcon from '@material-ui/icons/Add';
+
 import SearchPlace from './SearchPlace';
 
 // const axios = require('axios')
@@ -204,31 +206,11 @@ class MyMap extends Component {
             }
         });
 
-        //add the coordinates of each trail
-        let polyPath = [
-            { lat: 37.772, lng: -122.214 },
-            { lat: 21.291, lng: -157.821 },
-            { lat: -18.142, lng: 178.431 },
-            { lat: -27.467, lng: 153.027 }
-        ]
-
-        const poly = new window.google.maps.Polyline({
-            path: polyPath,
-            strokeColor: '#000000',
-            strokeOpacity: 1.0,
-            strokeWeight: 3
-        });
-        poly.setMap(map);
-
         map.addListener('click', this.addLatLng);
         window.google.maps.eventaddLatLng = (event) => {
-            const path = poly.getPath();
-
-            path.push(event.latLng);
 
             const marker3 = new window.google.maps.Marker({
                 position: event.latLng,
-                title: '#' + path.getLength(),
                 map: map
             });
         }
@@ -262,6 +244,9 @@ class MyMap extends Component {
                                 <IconButton edge="end" aria-label="Delete">
                                     <DeleteIcon />
                                 </IconButton>
+                                <IconButton edge="end" aria-label="Add">
+                                <AddIcon />
+                                </IconButton>
                             </ListItemSecondaryAction>
                         </ListItem>
                         <ListItem>
@@ -270,12 +255,19 @@ class MyMap extends Component {
                                 <IconButton edge="end" aria-label="Delete">
                                     <DeleteIcon />
                                 </IconButton>
+                                <IconButton edge="end" aria-label="Add">
+                                <AddIcon />
+                                </IconButton>
                             </ListItemSecondaryAction>
                         </ListItem>
                         <ListItem>
                             <ListItemText primary="location 3" />
                             <ListItemSecondaryAction>
                                 <IconButton edge="end" aria-label="Delete">
+                                <DeleteIcon />
+                                </IconButton>
+                                <IconButton edge="end" aria-label="Add">
+                                <AddIcon />
                                 </IconButton>
                             </ListItemSecondaryAction>
                         </ListItem>
@@ -286,6 +278,5 @@ class MyMap extends Component {
         )
     }
 }
-
 
 export default withStyles(styles)(MyMap);

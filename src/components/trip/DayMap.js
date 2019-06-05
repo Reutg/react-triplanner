@@ -4,9 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { List, ListItem, ListItemText, ListItemSecondaryAction, Typography, ListItemIcon } from '@material-ui/core';
 import PlaceIcon from '@material-ui/icons/Place';
 
-// const axios = require('axios')
 const apiKey = require('../map/config')
-
 
 const styles = theme => ({
     container: {
@@ -16,6 +14,7 @@ const styles = theme => ({
         height: '100vh'
     },
     root: {
+        display: 'flex',
         width: '95%',
         backgroundColor: theme.palette.background.paper,
         margin: theme.spacing(1)
@@ -26,9 +25,9 @@ const styles = theme => ({
         align: 'left'
     },
     title: {
-        textAlign: 'center',
+        textAlign: 'left',
         width: '100%',
-        fontSize: '20px'
+        alignSelf: 'center'
     },
     card: {
         marginTop: '10px',
@@ -36,11 +35,15 @@ const styles = theme => ({
         alignSelf: 'center'
     },
     list: {
-        width: '100%',
-        height: '100%'
+        width: '100%'
     },
     listIcon: {
         minWidth: '30px'
+    },
+    locations: {
+        width: '95%',
+        backgroundColor: theme.palette.background.paper,
+        margin: theme.spacing(1)
     }
 });
 
@@ -63,7 +66,6 @@ class DayMap extends Component {
 
         if (!this.props.trips[0] || !mapEl) {
             setTimeout(() => this.initMap(), 100)
-
             return
         }
         const day = +this.props.match.params.day - 1
@@ -91,11 +93,13 @@ class DayMap extends Component {
         let lastTrailPoint = this.props.trips[0].agenda[day].trails[this.props.trips[0].agenda[day].trails.length - 1].startCoor
 
         let waypts = []
-        if (this.props.trips[0].agenda[day].trails.length >= 3) {
-            let trailsArr = this.props.trips[0].agenda[day].trails
-            let wayptsArr = trailsArr.slice(1, trailsArr.length - 1)
-            waypts.push({ location: trailsArr[1].startCoor })
-            console.log(wayptsArr)
+        let trailsArr = this.props.trips[0].agenda[day].trails
+        if (trailsArr.length >= 3) {
+            // let wayptsArr = trailsArr.slice(1, trailsArr.length - 1)
+            for (let i=1 ; i<trailsArr.length-1 ; i++){
+                waypts.push({ location: trailsArr[i].startCoor })
+            }
+            console.log(waypts)
         }
 
         directionsService.route({
@@ -103,7 +107,7 @@ class DayMap extends Component {
             destination: lastTrailPoint,
             waypoints: waypts,
             optimizeWaypoints: true,
-            travelMode: 'DRIVING'
+            travelMode: 'WALKING'
         }, function (response, status) {
             if (status === 'OK') {
                 directionsDisplay.setDirections(response);
@@ -143,13 +147,13 @@ class DayMap extends Component {
         const day = +this.props.match.params.day - 1
 
         return (
-            <List className={classes.root}>
+            <List className={classes.locations}>
                 {trips[0].agenda[day].trails.map(trail =>
-                    <ListItem>
+                    <ListItem key={trail._id}>
                         <ListItemIcon className={classes.listIcon}>
                             <PlaceIcon />  
                         </ListItemIcon>
-                        <ListItemText primary={trail.title} />
+                        <ListItemText className={classes.title} primary={trail.title} />
                         <ListItemSecondaryAction>
                         </ListItemSecondaryAction>
                     </ListItem>
