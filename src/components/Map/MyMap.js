@@ -1,13 +1,21 @@
 import React, { Component } from 'react'
 
 import { withStyles } from '@material-ui/core/styles';
-import { Input, List, ListItem, IconButton, ListItemText, ListItemSecondaryAction } from '@material-ui/core';
+import { Input, List, ListItem, IconButton, ListItemText, ListItemSecondaryAction, Grid, Button } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 
+import {
+    MuiPickersUtilsProvider,
+    KeyboardTimePicker,
+    KeyboardDatePicker,
+} from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
+
+
 import SearchPlace from './SearchPlace';
 
-// const axios = require('axios')
+const axios = require('axios')
 const apiKey = require('./config')
 
 
@@ -15,7 +23,7 @@ const styles = theme => ({
     container: {
         display: 'flex',
         flexWrap: 'wrap',
-        flexDirection: 'row',
+        flexDirection: 'column',
         height: '100vh'
     },
     root: {
@@ -39,6 +47,22 @@ const styles = theme => ({
     },
     list: {
         width: '100%'
+    },
+    timePicker: {
+        width: '40%',
+        margin: '10px'
+    },
+    datePicker: {
+        width: '85%'
+    },
+    button: {
+        width: '85%',
+        alignSelf: 'center',
+        marginTop: '10px'
+    },
+    addContainer: {
+        display: 'flex',
+        flexDirection: "column"
     }
 });
 
@@ -46,12 +70,16 @@ class MyMap extends Component {
     constructor() {
         super()
         this.state = {
+            selectedDate: null,
+            selectedStartTime: new Date(),
+            selectedEndTime: new Date(),
             lat: "",
             lng: "",
             map: "",
-            location: "",
+            locationName: "",
             selection: "",
-            agenda: ["1", "2", "3"]
+            agenda: ["1", "2", "3"],
+            startCoor: {}
         }
     }
 
@@ -141,7 +169,7 @@ class MyMap extends Component {
         window.google.maps.event.addListener(searchMarker, 'click', () => {
             let clickLat = searchMarker.getPosition().lat()
             let clickLng = searchMarker.getPosition().lng()
-            console.log(`marker - lat: ${clickLat}, lng: ${clickLng}`)
+            console.log(`search marker - lat: ${clickLat}, lng: ${clickLng}`)
 
             window.google.maps.event.addListener(searchMarker, 'dragend', () => {
                 dragLat = searchMarker.getPosition().lat()
@@ -159,7 +187,7 @@ class MyMap extends Component {
 
         service.getDetails(request, function (place, status) {
             if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-                var marker = new window.google.maps.Marker({
+                const marker = new window.google.maps.Marker({
                     map: map,
                     position: place.geometry.location
                 });
@@ -171,7 +199,7 @@ class MyMap extends Component {
         });
 
 
-        autocomplete.addListener('place_changed', function () {
+        autocomplete.addListener('place_changed', () => {
             infowindow.close();
             searchMarker.setVisible(false);
             const place = autocomplete.getPlace();
@@ -196,7 +224,19 @@ class MyMap extends Component {
                     (place.address_components[1] ? place.address_components[1].short_name : ''),
                     (place.address_components[2] ? place.address_components[2].short_name : '')
                 ].join(' ');
-                console.log(place, address)
+                let { newAttraction } = { ...this.state }
+
+                let selectedPlace = {
+                    title: place.name,
+                    startCoor: { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() },
+                    imgUrl: place.photos ? place.photos[Math.floor(Math.random() * place.photos.length)].getUrl() : ""
+                }
+
+                this.setState({
+                    startCoor: selectedPlace.startCoor,
+                    locationName: selectedPlace.title,
+                    imgUrl: selectedPlace.imgUrl
+                })
             }
 
             if (place.photos) {
@@ -218,61 +258,106 @@ class MyMap extends Component {
     handleChange = event => {
         let selection = event.target.value
         this.setState({ selection })
-    };
+    }
+
+    handleDateChange = (selectedDate) => {
+        this.setState({ selectedDate })
+    }
+
+    handleStartTime = (selectedStartTime) => {
+        this.setState({ selectedStartTime })
+    }
+
+    handleEndTime = (selectedEndTime) => {
+        this.setState({ selectedEndTime })
+    }
+
+    getTripDates(trips) {
+        if (!trips[0]) {
+            return { startDate: new Date(), endDate: new Date() }
+        }
+
+        let { startDate, endDate } = trips[0]
+
+        if (!this.state.selectedDate) {
+            this.setState({ selectedDate: startDate })
+        }
+
+        return { startDate, endDate }
+    }
+
+    getTimeString(date) {
+        return `${date.getHours()}:${date.getMinutes()}`
+    }
+
+    addNewLocation = async () => {
+        let tripStartDate = new Date(this.props.trips[0].startDate)
+        let { selectedDate } = this.state
+        let day = ((selectedDate - tripStartDate) / 86400000 || 0)
+        let location = {
+            title: this.state.locationName,
+            startTime: this.getTimeString(this.state.selectedStartTime),
+            endTime: this.getTimeString(this.state.selectedEndTime),
+            startCoor: this.state.startCoor,
+            imgUrl: this.state.imgUrl,
+            tripID: this.props.trips[0]._id,
+            day: day
+        }
+        await axios.post('http://localhost:4000/attraction', location)
+        this.props.loadData()
+    }
 
     render() {
         const { classes } = this.props
 
+        const { startDate, endDate } = this.getTripDates(this.props.trips)
+        console.log(startDate, endDate)
+
         return (
             <div className={classes.container}>
-                {/* <Input
-                    placeholder="Enter location"
-                    id="places-search"
-                    className={classes.input}
-                    inputProps={{
-                        'aria-label': 'Description',
-                    }}
-                /> */}
+
                 <SearchPlace />
                 <div id="map" style={{ margin: '10px' }}></div>
+                <div className={classes.addContainer}>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                        <Grid container className={classes.grid} justify="space-around">
+                            <KeyboardDatePicker
+                                className={classes.datePicker}
+                                margin="normal"
+                                label="Choose trip day"
+                                value={this.state.selectedDate}
+                                onChange={this.handleDateChange}
+                                minDate={new Date(startDate)}
+                                maxDate={new Date(endDate)}
+                                format="dd.MM.yyyy"
+                            />
+                            <Grid
+                                direction="row"
+                                justify="center"
+                                alignItems="center">
+                                <KeyboardTimePicker
+                                    className={classes.timePicker}
+                                    margin="normal"
+                                    label="Start time"
+                                    value={this.state.selectedStartTime}
+                                    onChange={this.handleStartTime}
+                                    ampm={false}
+                                />
+                                <KeyboardTimePicker
+                                    className={classes.timePicker}
+                                    margin="normal"
+                                    label="End time"
+                                    value={this.state.selectedEndTime}
+                                    onChange={this.handleEndTime}
+                                    ampm={false}
+                                />
+                            </Grid>
+                        </Grid>
+                    </MuiPickersUtilsProvider>
 
-                <div className={classes.list}>
-                    <List className={classes.root}>
-                        <ListItem>
-                            <ListItemText primary="location 1" />
-                            <ListItemSecondaryAction>
-                                <IconButton edge="end" aria-label="Delete">
-                                    <DeleteIcon />
-                                </IconButton>
-                                <IconButton edge="end" aria-label="Add">
-                                <AddIcon />
-                                </IconButton>
-                            </ListItemSecondaryAction>
-                        </ListItem>
-                        <ListItem>
-                            <ListItemText primary="location 2" />
-                            <ListItemSecondaryAction>
-                                <IconButton edge="end" aria-label="Delete">
-                                    <DeleteIcon />
-                                </IconButton>
-                                <IconButton edge="end" aria-label="Add">
-                                <AddIcon />
-                                </IconButton>
-                            </ListItemSecondaryAction>
-                        </ListItem>
-                        <ListItem>
-                            <ListItemText primary="location 3" />
-                            <ListItemSecondaryAction>
-                                <IconButton edge="end" aria-label="Delete">
-                                <DeleteIcon />
-                                </IconButton>
-                                <IconButton edge="end" aria-label="Add">
-                                <AddIcon />
-                                </IconButton>
-                            </ListItemSecondaryAction>
-                        </ListItem>
-                    </List>
-
+                    <Button variant="outlined" color="primary" className={classes.button} onClick={this.addNewLocation}>
+                        Add
+                </Button>
                 </div>
             </div>
         )

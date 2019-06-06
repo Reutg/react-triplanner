@@ -52,7 +52,7 @@ class SearchTrail extends Component {
 
         return (
         <div>
-    {/* <form className={classes.container} noValidate autoComplete="off">
+    <form className={classes.container} noValidate autoComplete="off">
      <SearchPlace />
 
       <FormControl className={classes.formControl}>
@@ -72,13 +72,13 @@ class SearchTrail extends Component {
           <MenuItem value={30}>Hard</MenuItem>
         </Select>
       </FormControl>
-      </form> */}
+      </form> 
 
-      {/* <SearchPlace /> */}
-      <DayMap />
-      {/* <Button variant="contained" color="primary" className={classes.button}>
+      {/* <SearchPlace />
+      {/* <DayMap /> */}
+      <Button variant="contained" color="primary" className={classes.button}>
         Search
-      </Button> */}
+      </Button>
         </div>
         )
     }

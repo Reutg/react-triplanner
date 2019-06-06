@@ -14,16 +14,12 @@ import FormatListBulletedIcon from '@material-ui/icons/List';
 import FlightIcon from '@material-ui/icons/Flight';
 import HotelIcon from '@material-ui/icons/Hotel';
 import AddIcon from '@material-ui/icons/Add';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
+
 
 
 
 import Fab from '@material-ui/core/Fab';
+import NewTrail from './NewTrail';
 
 
 const styles = theme => ({
@@ -117,8 +113,7 @@ class Trip extends Component {
   constructor() {
     super()
     this.state = {
-      isDialofOpen: false,
-      selectedDate: new Date()
+      isDialofOpen: false
     }
   }
   handleClickOpen = () => {
@@ -133,10 +128,7 @@ class Trip extends Component {
 
   }
 
-  handleDateChange = (date) => {
-    let { selectedDate } = this.state
-    this.setState({ selectedDate: date })
-  }
+  
 
   render() {
     const { classes } = this.props
@@ -220,30 +212,8 @@ class Trip extends Component {
                   <DialogContentText>
                     Add another attraction
                 </DialogContentText>
-                  <TextField
-                    autoFocus
-                    margin="dense"
-                    id="name"
-                    label="Title"
-                    type="text"
-                    fullWidth
-                  />
-                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <Grid container className={classes.grid} justify="space-around">
-                      <KeyboardDatePicker
-                        margin="normal"
-                        label="Date picker"
-                        value={this.state.selectedDate}
-                        onChange={this.handleDateChange}
-                      />
-                      <KeyboardTimePicker
-                        margin="normal"
-                        label="Time picker"
-                        value={this.state.selectedDate}
-                        onChange={this.handleDateChange}
-                      />
-                    </Grid>
-                  </MuiPickersUtilsProvider>
+                <NewTrail />
+                  
 
                 </DialogContent>
                 <DialogActions>

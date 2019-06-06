@@ -12,6 +12,7 @@ import SearchTrail from './components/Search/SearchTrail';
 import Trip from './components/trip/Trip';
 import DayMap from './components/trip/DayMap';
 import PackingList from './components/trip/PackingList';
+import LaunchScreen from './components/LaunchScreen';
 const apiKey = require('./components/map/config')
 const axios = require('axios')
 
@@ -34,21 +35,23 @@ class App extends Component {
       trips: [],
       ownerID: "5cf431891f20d35c7c3595df",
       members: [],
-      agenda: []
+      agenda: [],
+      showLaunchScreen: true
     }
-    
+
     this.renderSearch()
   }
 
-  componentWillMount() {
-  }
-  
   componentDidMount = async () => {
+    await this.loadData()
+  }
+
+  loadData = async () => {
     let { ownerID } = this.state
-    
+
     let trips = await axios.get(`http://localhost:4000/trips/${ownerID}`)
-    this.setState({ trips: trips.data })
-    
+
+    setTimeout(() => this.setState({ trips: trips.data, showLaunchScreen: false }), 2000)
   }
 
   renderSearch = () => {
@@ -57,6 +60,10 @@ class App extends Component {
 
   render() {
 
+    if (this.state.showLaunchScreen) {
+      return <LaunchScreen />
+    }
+
     return (
 
       <Router>
@@ -64,7 +71,7 @@ class App extends Component {
           <div className="App">
             <NavBar />
             <Route exact path="/SearchTrail" render={({ match }) => <SearchTrail match={match} />} />
-            <Route exact path="/map" render={({ match }) => <MyMap match={match} />} />
+            <Route exact path="/map" render={({ match }) => <MyMap match={match} trips={this.state.trips} loadData={this.loadData} />} />
             <Route exact path="/" render={({ match }) => <Trip match={match} trips={this.state.trips} />} />
             <Route exaxt path="/dayMap/:day" render={({ match }) => <DayMap match={match} trips={this.state.trips} />} />
             <Route exaxt path="/packingList" render={({ match }) => <PackingList match={match} trips={this.state.trips} />} />

@@ -3,6 +3,7 @@ const request = require('request')
 const router = express.Router()
 const HikingTrail = require('../models/HikingTrail')
 const {Trip , Agenda} = require('../models/Trip')
+const Attraction = require('../models/Attraction')
 
 
 module.exports = router
@@ -58,13 +59,24 @@ router.post('/trip', async (req,res) => {
     res.send(trip)
 })
 
-router.put('/trip/:tripID', async (req,res) => {
-    let tripID = req.params.tripID
-    let body = req.body
+// router.put('/trip/:tripID', async (req,res) => {
+//     let tripID = req.params.tripID
+//     let body = req.body
+
+//     const trip = await Trip.findOne({ _id: tripID })
+//     trip.agenda[day].push(body)
+//     await trip.save()
+//     res.send(trip)
+
+// })
+
+router.post('/attraction', async (req,res) => {
+    const {day, tripID, ...body} = req.body
+    const attraction = new Attraction(body)
+    await attraction.save()
 
     const trip = await Trip.findOne({ _id: tripID })
-    trip.agenda.push(body.day)
+    trip.agenda[day].trails.push(attraction._id)
     await trip.save()
     res.send(trip)
-
 })
