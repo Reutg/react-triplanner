@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Typography, Avatar, Grid, IconButton, Icon, DialogActions, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, Button, Chip } from '@material-ui/core';
+import { Typography, Avatar, Grid, DialogActions, Dialog, DialogTitle, DialogContent, DialogContentText, Button, Chip } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 import Divider from '@material-ui/core/Divider';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
@@ -13,12 +13,7 @@ import { Link } from 'react-router-dom';
 import FormatListBulletedIcon from '@material-ui/icons/List';
 import FlightIcon from '@material-ui/icons/Flight';
 import HotelIcon from '@material-ui/icons/Hotel';
-import AddIcon from '@material-ui/icons/Add';
 
-
-
-
-import Fab from '@material-ui/core/Fab';
 import NewTrail from './NewTrail';
 
 
@@ -28,14 +23,14 @@ const styles = theme => ({
     maxWidth: 500,
   },
   header: {
-    textAlign: 'left',
+    textAlign: 'center',
     fontWeight: 'bold',
     marginTop: '10px',
     marginLeft: '10px',
     marginBottom: '0'
   },
   subHeader: {
-    textAlign: 'left',
+    textAlign: 'center',
     marginTop: '0px',
     marginLeft: '10px'
   },
@@ -59,11 +54,6 @@ const styles = theme => ({
     backgroundPosition: 'center',
     justifySelf: "center"
   },
-  bullet: {
-    display: 'inline-block',
-    margin: '0 2px',
-    transform: 'scale(0.8)',
-  },
   title: {
     fontSize: 14,
     textAlign: 'left',
@@ -84,25 +74,10 @@ const styles = theme => ({
     margin: '10px',
     fontSize: '25px'
   },
-  fab: {
-    position: 'absolute',
-    bottom: theme.spacing(2),
-    right: theme.spacing(2),
-  },
-  avatarPurple: {
+  avatar: {
     margin: 10,
     color: '#fff',
-    backgroundColor: '#00838f'
-  },
-  avatarBlue: {
-    margin: 10,
-    color: '#fff',
-    backgroundColor: '#00838f'
-  },
-  avatarGreen: {
-    margin: 10,
-    color: '#fff',
-    backgroundColor: '#00838f'
+    backgroundColor: '#424242'
   },
   chip: {
     margin: theme.spacing(1),
@@ -110,40 +85,30 @@ const styles = theme => ({
 });
 
 class Trip extends Component {
-  constructor() {
-    super()
-    this.state = {
-      isDialofOpen: false
-    }
-  }
-  handleClickOpen = () => {
-
-    const { isDialofOpen } = this.state
-
-    this.setState({ isDialofOpen: true })
-  }
-  handleClose = () => {
-    const { isDialofOpen } = this.state
-    this.setState({ isDialofOpen: false })
-
-  }
-
   
+  formatDate = (date) => {
+      let givenDate = new Date(date)
+      let day = givenDate.getDate()
+      let month = +givenDate.getMonth() + 1
+      let year = givenDate.getFullYear()
+
+      return `${day}.${month}.${year}`
+  }
 
   render() {
     const { classes } = this.props
 
-    const { trips } = this.props
+    const { trip } = this.props
 
-    if (!trips[0]) { return (<React.Fragment />) }
+    if (!trip) { return (<React.Fragment />) }
 
     return (
       <div className={classes.root}>
         <Typography className={classes.header} variant="h5" component="h2" gutterBottom>
-          {trips[0].name}
+          {trip.name}
         </Typography>
         <Typography className={classes.subHeader} variant="h6" component="h2" gutterBottom>
-          {trips[0].destination}, {trips[0].startDate} - {trips[0].endDate}
+          {trip.destination}, {this.formatDate(trip.startDate)} - {this.formatDate(trip.endDate)}
         </Typography>
 
         <Divider />
@@ -152,7 +117,7 @@ class Trip extends Component {
           Traveling with me:
         </Typography>
         <Grid container justify="center" alignItems="center">
-          {trips[0].members.map(member =>
+          {trip.members.map(member =>
           <Chip
           avatar={<Avatar key={member.name} alt={member.name} src={member.imgURL} className={classes.avatar} />}
           label={member.name} className={classes.chipLabel}
@@ -167,21 +132,21 @@ class Trip extends Component {
         </Typography>
         <Grid container justify="center" alignItems="center">
         <Link to={`/packingList`} style={{ textDecoration: 'none', margin: '5px', alignSelf: 'start' }}>
-          <Avatar className={classes.avatarPurple}>
+          <Avatar className={classes.avatar}>
             <FormatListBulletedIcon className={classes.icon} />
           </Avatar>
         </Link>
-          <Avatar className={classes.avatarBlue}>
+          <Avatar className={classes.avatar}>
             <FlightIcon className={classes.icon} />
           </Avatar>
-          <Avatar className={classes.avatarGreen}>
+          <Avatar className={classes.avatar}>
             <HotelIcon className={classes.icon} />
           </Avatar>
         </Grid>
         <Typography className={classes.simpleText} variant="subtitle1" component="h2">
           Agenda:
         </Typography>
-        {trips[0].agenda.map(day =>
+        {trip.agenda.map(day =>
           <ExpansionPanel key={day.day}>
             <ExpansionPanelSummary
               expandIcon={<ExpandMoreIcon />}
@@ -203,28 +168,6 @@ class Trip extends Component {
                   </CardActions>
                 </Card>
               )}
-              <Fab color="primary" size="small" aria-label="Add" className={classes.fab} onClick={this.handleClickOpen}>
-                <AddIcon />
-              </Fab>
-              <Dialog open={this.state.isDialofOpen} onClose={this.handleClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">Add new</DialogTitle>
-                <DialogContent>
-                  <DialogContentText>
-                    Add another attraction
-                </DialogContentText>
-                <NewTrail />
-                  
-
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={this.handleClose} color="primary">
-                    Cancel
-          </Button>
-                  <Button onClick={this.handleClose} color="primary">
-                    Create
-          </Button>
-                </DialogActions>
-              </Dialog>
             </ExpansionPanelDetails>
           </ExpansionPanel>
         )}

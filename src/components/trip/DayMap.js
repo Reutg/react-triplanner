@@ -64,12 +64,12 @@ class DayMap extends Component {
     initMap = () => {
         const mapEl = document.getElementById('map');
 
-        if (!this.props.trips[0] || !mapEl) {
+        if (!this.props.trip || !mapEl) {
             setTimeout(() => this.initMap(), 100)
             return
         }
         const day = +this.props.match.params.day - 1
-        let firstTrailStart = this.props.trips[0].agenda[day].trails[0].startCoor
+        let firstTrailStart = this.props.trip.agenda[day].trails[0].startCoor
 
         const directionsService = new window.google.maps.DirectionsService;
         const directionsDisplay = new window.google.maps.DirectionsRenderer;
@@ -89,17 +89,15 @@ class DayMap extends Component {
 
     calculateAndDisplayRoute = (directionsService, directionsDisplay) => {
         const day = +this.props.match.params.day - 1
-        let firstTrailStart = this.props.trips[0].agenda[day].trails[0].startCoor
-        let lastTrailPoint = this.props.trips[0].agenda[day].trails[this.props.trips[0].agenda[day].trails.length - 1].startCoor
+        let firstTrailStart = this.props.trip.agenda[day].trails[0].startCoor
+        let lastTrailPoint = this.props.trip.agenda[day].trails[this.props.trip.agenda[day].trails.length - 1].startCoor
 
         let waypts = []
-        let trailsArr = this.props.trips[0].agenda[day].trails
+        let trailsArr = this.props.trip.agenda[day].trails
         if (trailsArr.length >= 3) {
-            // let wayptsArr = trailsArr.slice(1, trailsArr.length - 1)
             for (let i=1 ; i<trailsArr.length-1 ; i++){
                 waypts.push({ location: trailsArr[i].startCoor })
             }
-            console.log(waypts)
         }
 
         directionsService.route({
@@ -112,20 +110,8 @@ class DayMap extends Component {
             if (status === 'OK') {
                 directionsDisplay.setDirections(response);
                 const route = response.routes[0];
-                //     var summaryPanel = document.getElementById('directions-panel');
-                //     summaryPanel.innerHTML = '';
-                //     // For each route, display summary information.
                 for (let i = 0; i < route.legs.length; i++) {
-                    // const routeSegment = i + 1;
-                    // summaryPanel.innerHTML += '<b>Route Segment: ' + routeSegment +
-                    //     '</b><br>';
-                    // summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
-                    // summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
-                    // summaryPanel.innerHTML += route.legs[i].distance.text + '<br><br>';
-                    console.log(route.legs[i])
                 }
-                // } else {
-                //     window.alert('Directions request failed due to ' + status);
             }
         });
 
@@ -133,13 +119,13 @@ class DayMap extends Component {
 
     getTrailsPerDay = async () => {
         const day = +this.props.match.params.day - 1
-        let trails = await this.props.trips[0].agenda[day].trails
+        let trails = await this.props.trip.agenda[day].trails
 
         this.setState({ trails })
     }
 
-    renderTrails(trips) {
-        if (!trips || !trips[0]) {
+    renderTrails(trip) {
+        if (!trip) {
             return
         }
 
@@ -148,7 +134,7 @@ class DayMap extends Component {
 
         return (
             <List className={classes.locations}>
-                {trips[0].agenda[day].trails.map(trail =>
+                {trip.agenda[day].trails.map(trail =>
                     <ListItem key={trail._id}>
                         <ListItemIcon className={classes.listIcon}>
                             <PlaceIcon />  
@@ -165,7 +151,7 @@ class DayMap extends Component {
     render() {
         this.initMap()
         const { classes } = this.props
-        const { trips } = this.props
+        const { trip } = this.props
         console.log(this.props.match.params.day)
         return (
             <div className={classes.container}>
@@ -177,7 +163,7 @@ class DayMap extends Component {
                 <div id="map" style={{ margin: '10px' }}></div>
 
                 <div className={classes.list}>
-                    {this.renderTrails(trips)}
+                    {this.renderTrails(trip)}
                 </div>
             </div>
         )

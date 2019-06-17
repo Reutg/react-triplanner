@@ -83,7 +83,8 @@ let trip1 = new Trip({
     ],
     members: [member1, member2, member3],
     startDate: "12.06.2019",
-    endDate: "14.06.2019"
+    endDate: "14.06.2019",
+    packingList: []
 })
     
     // user1.save()

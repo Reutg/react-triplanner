@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
 
 import { withStyles } from '@material-ui/core/styles';
-import { Input, List, ListItem, IconButton, ListItemText, ListItemSecondaryAction, Grid, Button } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
-import AddIcon from '@material-ui/icons/Add';
+import { Grid, Button } from '@material-ui/core';
 
 import {
     MuiPickersUtilsProvider,
@@ -272,12 +270,12 @@ class MyMap extends Component {
         this.setState({ selectedEndTime })
     }
 
-    getTripDates(trips) {
-        if (!trips[0]) {
+    getTripDates(trip) {
+        if (!trip) {
             return { startDate: new Date(), endDate: new Date() }
         }
 
-        let { startDate, endDate } = trips[0]
+        let { startDate, endDate } = trip
 
         if (!this.state.selectedDate) {
             this.setState({ selectedDate: startDate })
@@ -291,7 +289,7 @@ class MyMap extends Component {
     }
 
     addNewLocation = async () => {
-        let tripStartDate = new Date(this.props.trips[0].startDate)
+        let tripStartDate = new Date(this.props.trip.startDate)
         let { selectedDate } = this.state
         let day = ((selectedDate - tripStartDate) / 86400000 || 0)
         let location = {
@@ -300,7 +298,7 @@ class MyMap extends Component {
             endTime: this.getTimeString(this.state.selectedEndTime),
             startCoor: this.state.startCoor,
             imgUrl: this.state.imgUrl,
-            tripID: this.props.trips[0]._id,
+            tripID: this.props.trip._id,
             day: day
         }
         await axios.post('http://localhost:4000/attraction', location)

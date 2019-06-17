@@ -2,7 +2,7 @@ const express = require('express')
 const request = require('request')
 const router = express.Router()
 const HikingTrail = require('../models/HikingTrail')
-const {Trip , Agenda} = require('../models/Trip')
+const {Trip , Agenda, Item} = require('../models/Trip')
 const Attraction = require('../models/Attraction')
 
 
@@ -52,7 +52,8 @@ router.post('/trip', async (req,res) => {
         agenda: body.agenda,
         members: body.memberID,
         startDate: body.startDate,
-        endDate: body.endDate 
+        endDate: body.endDate,
+        packingList: []
     })
 
     await trip.save()
@@ -77,6 +78,17 @@ router.post('/attraction', async (req,res) => {
 
     const trip = await Trip.findOne({ _id: tripID })
     trip.agenda[day].trails.push(attraction._id)
+    await trip.save()
+    res.send(trip)
+})
+
+router.put('/packingList', async (req,res) => {
+    const {tripID, ...body} = req.body
+
+    const trip = await Trip.findOne({_id: tripID})
+    
+    trip.packingList.push(new Item(body))
+
     await trip.save()
     res.send(trip)
 })

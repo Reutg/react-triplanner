@@ -32,7 +32,7 @@ class App extends Component {
   constructor() {
     super()
     this.state = {
-      trips: [],
+      trip: "",
       ownerID: "5cf431891f20d35c7c3595df",
       members: [],
       agenda: [],
@@ -51,7 +51,7 @@ class App extends Component {
 
     let trips = await axios.get(`http://localhost:4000/trips/${ownerID}`)
 
-    setTimeout(() => this.setState({ trips: trips.data, showLaunchScreen: false }), 2000)
+    setTimeout(() => this.setState({ trip: trips.data[0], showLaunchScreen: false }), 2000)
   }
 
   renderSearch = () => {
@@ -71,10 +71,10 @@ class App extends Component {
           <div className="App">
             <NavBar />
             <Route exact path="/SearchTrail" render={({ match }) => <SearchTrail match={match} />} />
-            <Route exact path="/map" render={({ match }) => <MyMap match={match} trips={this.state.trips} loadData={this.loadData} />} />
-            <Route exact path="/" render={({ match }) => <Trip match={match} trips={this.state.trips} />} />
-            <Route exaxt path="/dayMap/:day" render={({ match }) => <DayMap match={match} trips={this.state.trips} />} />
-            <Route exaxt path="/packingList" render={({ match }) => <PackingList match={match} trips={this.state.trips} />} />
+            <Route exact path="/map" render={({ match }) => <MyMap match={match} trip={this.state.trip} loadData={this.loadData} />} />
+            <Route exact path="/" render={({ match }) => <Trip match={match} trip={this.state.trip} />} />
+            <Route exaxt path="/dayMap/:day" render={({ match }) => <DayMap match={match} trip={this.state.trip} />} />
+            <Route exaxt path="/packingList" render={({ match }) => <PackingList match={match} trip={this.state.trip} />} />
           </div>
         </MuiThemeProvider>
       </Router>
