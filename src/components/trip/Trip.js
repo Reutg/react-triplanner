@@ -136,9 +136,13 @@ class Trip extends Component {
             <FormatListBulletedIcon className={classes.icon} />
           </Avatar>
         </Link>
+
+        <Link to={`/flights`} style={{ textDecoration: 'none', margin: '5px', alignSelf: 'start' }}>
           <Avatar className={classes.avatar}>
             <FlightIcon className={classes.icon} />
           </Avatar>
+        </Link>
+
           <Avatar className={classes.avatar}>
             <HotelIcon className={classes.icon} />
           </Avatar>

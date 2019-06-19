@@ -34,7 +34,6 @@ const styles = theme => ({
     textAlign: 'left',
     fontWeight: 'bold',
     fontSize: '16px',
-    color: 'primary',
     marginLeft: '20px',
     marginTop: '10px'
   },
@@ -65,15 +64,7 @@ class PackingList extends Component {
       listInput: "Add new item",
       categorySelection: "",
       noteInput: "Add note",
-      packingList:
-       {
-         items: [
-        {
-            category: "",
-            text: "",
-            isChecked: false,
-        }
-        ]},
+      packingList: [],
       categories: ["Clothes", "Shoes", "Accessories", "Toileteries", "Other"]
     }
   }
@@ -106,24 +97,64 @@ class PackingList extends Component {
     }
   }
 
-  addNewListItem = async () => {
-    let packingList = {...this.state.packingList}
-    const item = {
-      tripID: this.props.trip._id,
-      category: this.state.categorySelection,
-      text: this.state.listInput,
-      isChecked: false,
-    }
-    packingList.items.push(item)
-    this.setState({ packingList })
+  addToPackingList = async () => {
+    const category = this.state.categorySelection
+    const text = this.state.listInput
 
-    await axios.put('http://localhost:4000/packingList', item)
+    await this.props.addToPackingList(category, text)
+  }
+
+  renderPackingList = (trip, category) => {
+    if (!trip || !trip.packingList) {
+      return
+    }
+
+    let categoryArr = this.state.categories
+    
+    const { classes } = this.props
+    return (
+      <List className={classes.root}>
+          {trip.packingList.filter(item => item.category === category).map((value) => {
+            const labelId = `checkbox-list-label-${value.text}`;
+            return (
+              <Fragment>
+                {/* onClick={this.handleToggle(value)} */}
+                <ListItem key={value.text} role={undefined} dense button >
+                  <ListItemIcon className={classes.itemIcon}>
+                    <Checkbox
+                      edge="start"
+                      // checked={checked.indexOf(value) !== -1}
+                      tabIndex={-1}
+                      disableRipple
+                      inputProps={{ 'aria-labelledby': labelId }}
+                    />
+                  </ListItemIcon>
+                  <ListItemText
+                    id={labelId}
+                    primary={`${value.text}`}
+                  />
+                  <ListItemSecondaryAction>
+                    <IconButton edge="end" aria-label="Delete">
+                      <DeleteIcon />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              </Fragment>
+            );
+          })
+        
+          }
+      </List>
+
+    )
   }
 
   render() {
     const { classes } = this.props
     const { checked } = this.state
-    console.log(this.state.packingList)
+    const { trip } = this.props
+    // const packingList = this.props.trip.packingList
+    // console.log(packingList)
     return (
       <div className={classes.container}>
         <Typography className={classes.header} variant="h5" component="h2" gutterBottom>
@@ -156,7 +187,7 @@ class PackingList extends Component {
             variant="contained"
             color="secondary"
             className={classes.button}
-            onClick={this.addNewListItem}>
+            onClick={this.addToPackingList}>
             Add
       </Button>
         </div>
@@ -166,37 +197,7 @@ class PackingList extends Component {
               <Typography className={classes.categoryHeader} color='secondary' variant="h6" component="h6" gutterBottom>
                 {category}
               </Typography>
-              <List className={classes.root}>
-                {this.state.packingList.items.filter(item => item.category === category).map(value => {
-                  const labelId = `checkbox-list-label-${value.text}`;
-                  return (
-                    <Fragment>
-                      {/* onClick={this.handleToggle(value)} */}
-                      <ListItem key={value.text} role={undefined} dense button >
-                        <ListItemIcon className={classes.itemIcon}>
-                          <Checkbox
-                            edge="start"
-                            // checked={checked.indexOf(value) !== -1}
-                            tabIndex={-1}
-                            disableRipple
-                            inputProps={{ 'aria-labelledby': labelId }}
-                          />
-                        </ListItemIcon>
-                        <ListItemText 
-                            id={labelId} 
-                            primary={`${value.text}`}
-                             />
-                        <ListItemSecondaryAction>
-                          <IconButton edge="end" aria-label="Delete">
-                            <DeleteIcon />
-                          </IconButton>
-                        </ListItemSecondaryAction>
-                      </ListItem>
-                        
-                    </Fragment>
-                  );
-                })}
-              </List>
+              {this.renderPackingList(trip, category)}
             </Fragment>
           )
         })}
@@ -207,3 +208,5 @@ class PackingList extends Component {
 }
 
 export default withStyles(styles)(PackingList);
+
+

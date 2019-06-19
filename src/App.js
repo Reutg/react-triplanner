@@ -13,6 +13,7 @@ import Trip from './components/trip/Trip';
 import DayMap from './components/trip/DayMap';
 import PackingList from './components/trip/PackingList';
 import LaunchScreen from './components/LaunchScreen';
+import Flight from './components/trip/Flight';
 const apiKey = require('./components/map/config')
 const axios = require('axios')
 
@@ -51,12 +52,27 @@ class App extends Component {
 
     let trips = await axios.get(`http://localhost:4000/trips/${ownerID}`)
 
-    setTimeout(() => this.setState({ trip: trips.data[0], showLaunchScreen: false }), 2000)
+    //delay the launch screen
+    setTimeout(() => this.setState({ trip: trips.data[0], showLaunchScreen: false }), 0)
   }
 
   renderSearch = () => {
     // loadScript(`https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&language=en`)
   }
+
+  addToPackingList = async (category,text) => {
+    const item = {
+      tripID: this.state.trip._id,
+      category,
+      text,
+      isChecked: false,
+    }
+
+    const trip = await axios.put('http://localhost:4000/packingList', item)
+    this.setState({trip})
+    this.loadData()
+  }
+
 
   render() {
 
@@ -74,7 +90,14 @@ class App extends Component {
             <Route exact path="/map" render={({ match }) => <MyMap match={match} trip={this.state.trip} loadData={this.loadData} />} />
             <Route exact path="/" render={({ match }) => <Trip match={match} trip={this.state.trip} />} />
             <Route exaxt path="/dayMap/:day" render={({ match }) => <DayMap match={match} trip={this.state.trip} />} />
-            <Route exaxt path="/packingList" render={({ match }) => <PackingList match={match} trip={this.state.trip} />} />
+            <Route exaxt path="/packingList" render={({ match }) => <PackingList 
+                                                                      match={match} 
+                                                                      trip={this.state.trip} 
+                                                                      addToPackingList={this.addToPackingList} />} />
+            <Route exaxt path="/flights" render={({ match }) => <Flight
+                                                                      match={match} 
+                                                                      trip={this.state.trip} 
+                                                                       />} />                                                          
           </div>
         </MuiThemeProvider>
       </Router>

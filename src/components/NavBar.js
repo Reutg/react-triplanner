@@ -73,18 +73,14 @@ class NavBar extends Component {
                             </div>
                             <Divider />
                             <List onClick={() => this.setState({menuOpen: false})}>
-                                <ListItem button key={"text"}>
+                                <ListItem button key={"main"}>
                                     <ListItemIcon className={classes.listIcon}> <MapIcon /> </ListItemIcon>
                                     <ListItemText primary={<Link to="/" style={{ textDecoration: 'none', color: 'black', margin: '5px' }}>My Trip</Link>} />
                                 </ListItem>
-                                <ListItem button key={"text"}>
+                                <ListItem button key={"map"}>
                                     <ListItemIcon className={classes.listIcon}> <AddLocationIcon /> </ListItemIcon>
                                     <ListItemText primary={<Link to="/map" style={{ textDecoration: 'none', color: 'black', margin: '5px' }}>Add Attraction</Link>} />
                                 </ListItem>
-                                {/* <ListItem button key={"text"}>
-                                    <ListItemIcon className={classes.listIcon}> <SearchIcon /> </ListItemIcon>
-                                    <ListItemText primary={<Link to="/searchTrail" style={{ textDecoration: 'none', color: 'black', margin: '5px' }}>Search trails</Link>} />
-                                </ListItem> */}
                             </List>
                         </Drawer>
                         <Link to="/" style={{ textDecoration: 'none', color: 'white', margin: '5px' }}>
@@ -92,8 +88,6 @@ class NavBar extends Component {
                                 Triplanner
                         </Typography>
                         </Link>
-                        {/* <Link to="/map" style={{ textDecoration: 'none', color: 'black', margin: '5px' }}>Map</Link>
-                        <Link to="/searchTrail" style={{ textDecoration: 'none', color: 'white', margin: '5px' }}>Search trails</Link> */}
                     </Toolbar>
                 </AppBar>
             </div>
