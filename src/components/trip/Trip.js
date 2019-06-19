@@ -73,8 +73,12 @@ const styles = theme => ({
   },
   avatar: {
     margin: 10,
+    backgroundColor: theme.palette.secondary.main,
+  },
+  avatarDisabled: {
+    margin: 10,
     color: '#fff',
-    backgroundColor: theme.palette.secondary.main
+    backgroundColor: 'light-grey'
   },
   chip: {
     margin: theme.spacing(1),
@@ -135,12 +139,12 @@ class Trip extends Component {
         </Link>
 
         {/* <Link to={`/flights`} style={{ textDecoration: 'none', margin: '5px', alignSelf: 'start' }}> */}
-          <Avatar className={classes.avatar}>
+          <Avatar className={classes.avatarDisabled}>
             <FlightIcon className={classes.icon} />
           </Avatar>
         {/* </Link> */}
 
-          <Avatar className={classes.avatar}>
+          <Avatar className={classes.avatarDisabled}>
             <HotelIcon className={classes.icon} />
           </Avatar>
         </Grid>
@@ -157,7 +161,7 @@ class Trip extends Component {
               <Typography className={classes.heading}>Day {day.day}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails className={classes.expansionPanel}>
-              <Link to={`/dayMap/${day.day}`} style={{ textDecoration: 'none', color: '#006064', margin: '5px', alignSelf: 'start' }}>Map view</Link>
+              <Link to={`/dayMap/${day.day}`} style={{ color: '#263238', margin: '5px', alignSelf: 'start' }}>Map view</Link>
               {day.trails.map(trail =>
                 <Card key={trail._id} className={classes.card} style={{ backgroundImage: `url(${trail.imgUrl})` }} >
                   <CardContent>

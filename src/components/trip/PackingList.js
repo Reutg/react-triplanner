@@ -19,7 +19,6 @@ const styles = theme => ({
     display: 'flex',
     flexWrap: 'wrap',
     flexDirection: 'column',
-    height: '100vh'
   },
   header: {
     textAlign: 'left',
@@ -33,7 +32,8 @@ const styles = theme => ({
     fontWeight: 'bold',
     fontSize: '16px',
     marginLeft: '20px',
-    marginTop: '10px'
+    marginTop: '10px',
+    color: theme.palette.primary.main
   },
   addItem: {
     display: 'flex',
@@ -183,7 +183,7 @@ class PackingList extends Component {
         {this.state.categories.map(category => {
           return (
             <Fragment>
-              <Typography className={classes.categoryHeader} color='secondary' variant="h6" component="h6" gutterBottom>
+              <Typography className={classes.categoryHeader} variant="h6" component="h6" gutterBottom>
                 {category}
               </Typography>
               {this.renderPackingList(trip, category)}
