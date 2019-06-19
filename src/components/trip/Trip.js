@@ -137,11 +137,11 @@ class Trip extends Component {
           </Avatar>
         </Link>
 
-        <Link to={`/flights`} style={{ textDecoration: 'none', margin: '5px', alignSelf: 'start' }}>
+        {/* <Link to={`/flights`} style={{ textDecoration: 'none', margin: '5px', alignSelf: 'start' }}> */}
           <Avatar className={classes.avatar}>
             <FlightIcon className={classes.icon} />
           </Avatar>
-        </Link>
+        {/* </Link> */}
 
           <Avatar className={classes.avatar}>
             <HotelIcon className={classes.icon} />

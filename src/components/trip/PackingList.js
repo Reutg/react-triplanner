@@ -9,9 +9,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
-import CommentIcon from '@material-ui/icons/Comment';
 import DeleteIcon from '@material-ui/icons/Delete';
-import StarBorder from '@material-ui/icons/StarBorder';
 import { Typography, TextField, Button, FormControl, InputLabel, Select } from '@material-ui/core';
 
 const axios = require('axios')
@@ -61,26 +59,14 @@ class PackingList extends Component {
     super()
     this.state = {
       checked: false,
-      listInput: "Add new item",
+      listInput: "",
       categorySelection: "",
-      noteInput: "Add note",
       packingList: [],
       categories: ["Clothes", "Shoes", "Accessories", "Toileteries", "Other"]
     }
   }
 
-  // handleToggle = value => () => {
-  //     const currentIndex = checked.indexOf(value);
-  //     const newChecked = [...checked];
-
-  //     if (currentIndex === -1) {
-  //       newChecked.push(value);
-  //     } else {
-  //       newChecked.splice(currentIndex, 1);
-  //     }
-  // }
-
-  handleSelection = (event) => {
+    handleSelection = (event) => {
     this.setState({ categorySelection: event.target.value })
   }
 
@@ -88,13 +74,15 @@ class PackingList extends Component {
     let inputValue = event.target.value
     let inputName = event.target.name
     this.setState({ [inputName]: inputValue })
-    console.log(event)
   }
 
   handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       this.addNewListItem()
     }
+  }
+  handleCheck = (event) => {
+    this.props.handleCheck(event.target.name, event.target.checked)
   }
 
   addToPackingList = async () => {
@@ -104,28 +92,30 @@ class PackingList extends Component {
     await this.props.addToPackingList(category, text)
   }
 
+  deleteListItem = (itemID) => {
+    this.props.deleteListItem(itemID)
+  }
+
   renderPackingList = (trip, category) => {
     if (!trip || !trip.packingList) {
       return
     }
 
-    let categoryArr = this.state.categories
-    
     const { classes } = this.props
     return (
       <List className={classes.root}>
           {trip.packingList.filter(item => item.category === category).map((value) => {
-            const labelId = `checkbox-list-label-${value.text}`;
+            const labelId = `checkbox-list-label-${value._id}`;
             return (
               <Fragment>
-                {/* onClick={this.handleToggle(value)} */}
-                <ListItem key={value.text} role={undefined} dense button >
+                <ListItem key={value.text} role={undefined} dense button disableRipple >
                   <ListItemIcon className={classes.itemIcon}>
                     <Checkbox
                       edge="start"
-                      // checked={checked.indexOf(value) !== -1}
+                      name= {value._id}
+                      checked={value.isChecked}
+                      onChange={this.handleCheck}
                       tabIndex={-1}
-                      disableRipple
                       inputProps={{ 'aria-labelledby': labelId }}
                     />
                   </ListItemIcon>
@@ -134,7 +124,7 @@ class PackingList extends Component {
                     primary={`${value.text}`}
                   />
                   <ListItemSecondaryAction>
-                    <IconButton edge="end" aria-label="Delete">
+                    <IconButton edge="end" aria-label="Delete" onClick={()=>this.deleteListItem(value._id)}>
                       <DeleteIcon />
                     </IconButton>
                   </ListItemSecondaryAction>
@@ -151,10 +141,8 @@ class PackingList extends Component {
 
   render() {
     const { classes } = this.props
-    const { checked } = this.state
     const { trip } = this.props
-    // const packingList = this.props.trip.packingList
-    // console.log(packingList)
+
     return (
       <div className={classes.container}>
         <Typography className={classes.header} variant="h5" component="h2" gutterBottom>
@@ -177,6 +165,7 @@ class PackingList extends Component {
 
           <TextField
             name="listInput"
+            placeholder="Add item"
             className={classes.textField}
             value={this.state.listInput}
             onChange={this.handleInput}

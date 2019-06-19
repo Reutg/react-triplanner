@@ -2,47 +2,47 @@ const express = require('express')
 const request = require('request')
 const router = express.Router()
 const HikingTrail = require('../models/HikingTrail')
-const {Trip , Agenda, Item} = require('../models/Trip')
+const { Trip, Agenda, Item } = require('../models/Trip')
 const Attraction = require('../models/Attraction')
 
 
 module.exports = router
 
-router.get('/hikingTrails' , async (req,res) => {
+router.get('/hikingTrails', async (req, res) => {
     const hikingTrails = await HikingTrail.find({})
     res.send(hikingTrails)
 })
 
-router.get('/trips/:ownerID', async (req,res) => {
+router.get('/trips/:ownerID', async (req, res) => {
     let ownerID = req.params.ownerID
 
-    const trips = await Trip.find({owner: ownerID})
-    .populate(['members' , 'agenda.trails'])
+    const trips = await Trip.find({ owner: ownerID })
+        .populate(['members', 'agenda.trails'])
 
     res.send(trips)
 })
 
 
-router.get('/trip/:id' , async (req,res) => {
+router.get('/trip/:id', async (req, res) => {
     let id = req.params.id
 
-    const trip = await Trip.findOne({_id: id})
-    .populate(['members' , 'agenda.trails'])
+    const trip = await Trip.findOne({ _id: id })
+        .populate(['members', 'agenda.trails'])
     res.send(trip)
 })
 
-router.get('/trip-members/:tripID', async (req,res) => {
+router.get('/trip-members/:tripID', async (req, res) => {
     let tripID = req.params.tripID
 
-    
-    const trip = await Trip.findOne({_id: tripID})
-    .populate('members')
-    
-      
-      res.send(trip.members)
+
+    const trip = await Trip.findOne({ _id: tripID })
+        .populate('members')
+
+
+    res.send(trip.members)
 })
 
-router.post('/trip', async (req,res) => {
+router.post('/trip', async (req, res) => {
     let body = req.body
 
     let trip = new Trip({
@@ -71,8 +71,8 @@ router.post('/trip', async (req,res) => {
 
 // })
 
-router.post('/attraction', async (req,res) => {
-    const {day, tripID, ...body} = req.body
+router.post('/attraction', async (req, res) => {
+    const { day, tripID, ...body } = req.body
     const attraction = new Attraction(body)
     await attraction.save()
 
@@ -82,13 +82,38 @@ router.post('/attraction', async (req,res) => {
     res.send(trip)
 })
 
-router.put('/packingList', async (req,res) => {
-    const {tripID, ...body} = req.body
+router.put('/trip/:tripID/packingList', async (req, res) => {
+    const body = req.body
+    const { tripID } = req.params
+    const trip = await Trip.findOne({ _id: tripID })
 
-    const trip = await Trip.findOne({_id: tripID})
-    
     trip.packingList.push(new Item(body))
 
     await trip.save()
+    res.send(trip)
+})
+
+router.put('/trip/:tripID/packingList/:itemID', async (req, res) => {
+    const body = req.body
+    const { itemID, tripID } = req.params
+
+    const trip = await Trip.findOne({ _id: tripID })
+    let item = trip.packingList.find(item => item._id == itemID)
+    item.isChecked = JSON.parse(body.isChecked)
+
+    await trip.save()
+    res.send(trip)
+})
+
+router.delete('/trip/:tripID/packingList/:itemID', async (req, res) => {
+    const { itemID, tripID } = req.params
+
+    await Trip.update({ _id: tripID },
+        { $pull: { packingList: { _id: itemID } } }
+    )
+
+    const trip = await Trip.findOne({ _id: tripID })
+    // let item = trip.packingList.findIndex(item => item._id == itemID)
+    // trip.packingList.splice()
     res.send(trip)
 })

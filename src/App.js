@@ -20,9 +20,11 @@ const axios = require('axios')
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#0097a7',
+      main: '#cddc39',
     },
-    secondary: amber,
+    secondary: {
+      main: '#e91e63'
+    },
   },
   typography: {
     useNextVariants: true,
@@ -68,11 +70,20 @@ class App extends Component {
       isChecked: false,
     }
 
-    const trip = await axios.put('http://localhost:4000/packingList', item)
+    const trip = (await axios.put(`http://localhost:4000/trip/${item.tripID}/packingList`, item)).data
     this.setState({trip})
-    this.loadData()
   }
 
+  handleCheck = async (itemID, isChecked) => {
+    let trip = (await axios.put(`http://localhost:4000/trip/${this.state.trip._id}/packingList/${itemID}`, {isChecked})).data
+    this.setState({trip})
+  }
+
+  deleteListItem = async (itemID) => {
+
+    let trip = (await axios.delete(`http://localhost:4000/trip/${this.state.trip._id}/packingList/${itemID}`)).data
+    this.setState({trip})
+  }
 
   render() {
 
@@ -93,7 +104,9 @@ class App extends Component {
             <Route exaxt path="/packingList" render={({ match }) => <PackingList 
                                                                       match={match} 
                                                                       trip={this.state.trip} 
-                                                                      addToPackingList={this.addToPackingList} />} />
+                                                                      addToPackingList={this.addToPackingList} 
+                                                                      handleCheck={this.handleCheck} 
+                                                                      deleteListItem={this.deleteListItem} />} />
             <Route exaxt path="/flights" render={({ match }) => <Flight
                                                                       match={match} 
                                                                       trip={this.state.trip} 
