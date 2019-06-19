@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { Typography, Avatar, Grid, DialogActions, Dialog, DialogTitle, DialogContent, DialogContentText, Button, Chip } from '@material-ui/core';
-import { withStyles } from '@material-ui/styles';
+import { Typography, Avatar, Grid, Chip } from '@material-ui/core';
+import { withStyles, withTheme } from '@material-ui/styles';
 import Divider from '@material-ui/core/Divider';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -13,9 +13,6 @@ import { Link } from 'react-router-dom';
 import FormatListBulletedIcon from '@material-ui/icons/List';
 import FlightIcon from '@material-ui/icons/Flight';
 import HotelIcon from '@material-ui/icons/Hotel';
-
-import NewTrail from './NewTrail';
-
 
 const styles = theme => ({
   root: {
@@ -45,7 +42,7 @@ const styles = theme => ({
   heading: {
     fontSize: theme.typography.pxToRem(15),
     fontWeight: theme.typography.fontWeightRegular,
-    color: '#0097a7'
+    color: theme.palette.primary.main
   },
   card: {
     width: '90vw',
@@ -77,7 +74,7 @@ const styles = theme => ({
   avatar: {
     margin: 10,
     color: '#fff',
-    backgroundColor: '#424242'
+    backgroundColor: theme.palette.secondary.main
   },
   chip: {
     margin: theme.spacing(1),
