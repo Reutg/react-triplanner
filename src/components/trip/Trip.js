@@ -49,18 +49,23 @@ const styles = theme => ({
     margin: '5px',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
-    justifySelf: "center"
+    justifySelf: 'center',
+    textAlign: 'left'
+  },
+  cardContent: {
+    fontWeight: 'bold',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    color: theme.palette.primary.main,
+    display: 'inline',
+    padding: '0 3px',
+    borderRadius: '4px'
   },
   title: {
     fontSize: 14,
-    textAlign: 'left',
-    color: 'white',
-    fontWeight: 'bold'
   },
   trailText: {
     fontSize: 14,
-    textAlign: 'left',
-    backgroundColor: 'grey'
+    textAlign: 'left'
   },
   expansionPanel: {
     display: 'flex',
@@ -75,7 +80,7 @@ const styles = theme => ({
     fontSize: '25px',
     color: 'white'
   },
-  iconDisabled: { 
+  iconDisabled: {
     fontSize: '25px',
     color: 'grey'
   },
@@ -91,7 +96,7 @@ const styles = theme => ({
   chip: {
     margin: theme.spacing(1),
   },
-  dayPanel:{
+  dayPanel: {
     justifyContent: 'space-between'
   }
 });
@@ -165,18 +170,17 @@ class Trip extends Component {
         </Typography> */}
         {trip.agenda.map(day =>
           <ExpansionPanel key={day.day}>
-            <ExpansionPanelSummary classes={{content: classes.dayPanel}}
+            <ExpansionPanelSummary classes={{ content: classes.dayPanel }}
               expandIcon={<ExpandMoreIcon />}
-                    >
+            >
               <Typography className={classes.daysHeader}>Day {day.day}</Typography>
               <Link to={`/dayMap/${day.day}`} style={{ color: '#263238' }}><MapTwoToneIcon className={classes.icon} /></Link>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails className={classes.expansionPanel}>
-             
               {day.trails.map(trail =>
                 <Card key={trail._id} className={classes.card} style={{ backgroundImage: `url(${trail.imgUrl})` }} >
                   <CardContent>
-                    <Typography className={classes.title} color="textSecondary" gutterBottom>
+                    <Typography className={[classes.title, classes.cardContent]} gutterBottom>
                       <span className={classes.trailText}> {trail.startTime} - {trail.endTime}</span> - <span className={classes.trailText}>{trail.title}</span>
                     </Typography>
                   </CardContent>
