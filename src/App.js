@@ -20,10 +20,10 @@ const axios = require('axios')
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#ff6e40',
+      main: '#1976D2'
     },
     secondary: {
-      main: '#263238'
+      main: '#E23237',
     },
   },
   typography: {

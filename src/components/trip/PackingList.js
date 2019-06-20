@@ -9,10 +9,8 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
+import DeleteTwoToneIcon from '@material-ui/icons/DeleteTwoTone';
 import { Typography, TextField, Button, FormControl, InputLabel, Select } from '@material-ui/core';
-
-const axios = require('axios')
 
 const styles = theme => ({
   container: {
@@ -49,7 +47,7 @@ const styles = theme => ({
     margin: theme.spacing(1),
   },
   itemIcon: {
-    minWidth: 0
+    minWidth: 0,
   }
 });
 
@@ -116,7 +114,6 @@ class PackingList extends Component {
                       checked={value.isChecked}
                       onChange={this.handleCheck}
                       tabIndex={-1}
-                      inputProps={{ 'aria-labelledby': labelId }}
                     />
                   </ListItemIcon>
                   <ListItemText
@@ -125,7 +122,7 @@ class PackingList extends Component {
                   />
                   <ListItemSecondaryAction>
                     <IconButton edge="end" aria-label="Delete" onClick={()=>this.deleteListItem(value._id)}>
-                      <DeleteIcon />
+                      <DeleteTwoToneIcon />
                     </IconButton>
                   </ListItemSecondaryAction>
                 </ListItem>

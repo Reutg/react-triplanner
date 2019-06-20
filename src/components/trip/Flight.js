@@ -38,11 +38,22 @@ class Flight extends Component {
     constructor() {
         super()
         this.state = {
-            searachAttraction: ""
+            flightInfo: {
+                flightNumber: "DL 6641",
+                airline: "Delta",
+                departure: "",
+                landing: "",
+                status: "",
+                airport: "",
+                terminal: "",
+                gate: ""
+            }
+
         }
     }
     render() {
         const { classes } = this.props
+        const flight = this.state.flightInfo
         return (
             <div className={classes.container}>
                 <Typography className={classes.title} gutterBottom>
@@ -53,11 +64,11 @@ class Flight extends Component {
                         <Typography color='secondary' className={classes.title} gutterBottom>
                             Flight#
                         </Typography>
-                        <div className={classes.info}>DL 6641</div>  
+                        <div className={classes.info}>{flight.flightNumber}</div>  
                         <Typography color='secondary' className={classes.title} gutterBottom>
                             Airline
                         </Typography>
-                        <div className={classes.info}>Delta</div>
+                        <div className={classes.info}>{flight.airline}</div>
 
                     </CardContent>
                 </Card>
