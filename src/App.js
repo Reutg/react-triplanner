@@ -38,8 +38,6 @@ class App extends Component {
       agenda: [],
       showLaunchScreen: true
     }
-
-    this.renderSearch()
   }
 
   componentDidMount = async () => {
@@ -52,14 +50,10 @@ class App extends Component {
     let trips = await axios.get(`/trips/${ownerID}`)
 
     //delay the launch screen
-    setTimeout(() => this.setState({ trip: trips.data[0], showLaunchScreen: false }), 0)
+    setTimeout(() => this.setState({ trip: trips.data[0], showLaunchScreen: false }), 2000)
   }
 
-  renderSearch = () => {
-    // loadScript(`https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&language=en`)
-  }
-
-  addToPackingList = async (category,text) => {
+  addToPackingList = async (category, text) => {
     const item = {
       tripID: this.state.trip._id,
       category,
@@ -68,18 +62,18 @@ class App extends Component {
     }
 
     const trip = (await axios.put(`/trip/${item.tripID}/packingList`, item)).data
-    this.setState({trip})
+    this.setState({ trip })
   }
 
   handleCheck = async (itemID, isChecked) => {
-    let trip = (await axios.put(`/trip/${this.state.trip._id}/packingList/${itemID}`, {isChecked})).data
-    this.setState({trip})
+    let trip = (await axios.put(`/trip/${this.state.trip._id}/packingList/${itemID}`, { isChecked })).data
+    this.setState({ trip })
   }
 
   deleteListItem = async (itemID) => {
 
     let trip = (await axios.delete(`/trip/${this.state.trip._id}/packingList/${itemID}`)).data
-    this.setState({trip})
+    this.setState({ trip })
   }
 
   render() {
@@ -98,16 +92,16 @@ class App extends Component {
             <Route exact path="/map" render={({ match }) => <MyMap match={match} trip={this.state.trip} loadData={this.loadData} />} />
             <Route exact path="/" render={({ match }) => <Trip match={match} trip={this.state.trip} />} />
             <Route exaxt path="/dayMap/:day" render={({ match }) => <DayMap match={match} trip={this.state.trip} />} />
-            <Route exaxt path="/packingList" render={({ match }) => <PackingList 
-                                                                      match={match} 
-                                                                      trip={this.state.trip} 
-                                                                      addToPackingList={this.addToPackingList} 
-                                                                      handleCheck={this.handleCheck} 
-                                                                      deleteListItem={this.deleteListItem} />} />
+            <Route exaxt path="/packingList" render={({ match }) => <PackingList
+              match={match}
+              trip={this.state.trip}
+              addToPackingList={this.addToPackingList}
+              handleCheck={this.handleCheck}
+              deleteListItem={this.deleteListItem} />} />
             <Route exaxt path="/flights" render={({ match }) => <Flight
-                                                                      match={match} 
-                                                                      trip={this.state.trip} 
-                                                                       />} />                                                          
+              match={match}
+              trip={this.state.trip}
+            />} />
           </div>
         </MuiThemeProvider>
       </Router>

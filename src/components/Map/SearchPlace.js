@@ -15,7 +15,6 @@ class SearchPlace extends Component {
     
 
     rendeSearch = () =>{
-        // loadScript(`https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap&libraries=places&language=en`)
         
         let input = document.getElementById('places-search');
         let autocomplete = new window.google.maps.places.Autocomplete(input);
