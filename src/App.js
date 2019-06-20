@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-// import { observer } from 'mobx-react'
 import './App.css';
 
 import MyMap from './components/map/MyMap';
 
-import amber from '@material-ui/core/colors/amber';
 import NavBar from './components/NavBar';
 import SearchTrail from './components/Search/SearchTrail';
 import Trip from './components/trip/Trip';
@@ -14,7 +12,6 @@ import DayMap from './components/trip/DayMap';
 import PackingList from './components/trip/PackingList';
 import LaunchScreen from './components/LaunchScreen';
 import Flight from './components/trip/Flight';
-const apiKey = require('./components/map/config')
 const axios = require('axios')
 
 const theme = createMuiTheme({

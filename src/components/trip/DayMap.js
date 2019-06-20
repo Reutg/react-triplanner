@@ -4,8 +4,6 @@ import { withStyles } from '@material-ui/core/styles';
 import { List, ListItem, ListItemText, ListItemSecondaryAction, Typography, ListItemIcon } from '@material-ui/core';
 import PlaceIcon from '@material-ui/icons/Place';
 
-const apiKey = require('../map/config')
-
 const styles = theme => ({
     container: {
         display: 'flex',
@@ -56,11 +54,6 @@ class DayMap extends Component {
         }
     }
 
-    renderMap = () => {
-        // loadScript(`https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap&libraries=places&language=en`)
-        // window.initMap = this.initMap
-    }
-
     initMap = () => {
         const mapEl = document.getElementById('map');
 
@@ -95,7 +88,7 @@ class DayMap extends Component {
         let waypts = []
         let trailsArr = this.props.trip.agenda[day].trails
         if (trailsArr.length >= 3) {
-            for (let i=1 ; i<trailsArr.length-1 ; i++){
+            for (let i = 1; i < trailsArr.length - 1; i++) {
                 waypts.push({ location: trailsArr[i].startCoor })
             }
         }
@@ -137,7 +130,7 @@ class DayMap extends Component {
                 {trip.agenda[day].trails.map(trail =>
                     <ListItem key={trail._id}>
                         <ListItemIcon className={classes.listIcon}>
-                            <PlaceIcon />  
+                            <PlaceIcon />
                         </ListItemIcon>
                         <ListItemText className={classes.title} primary={trail.title} />
                         <ListItemSecondaryAction>
