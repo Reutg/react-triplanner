@@ -60,17 +60,6 @@ router.post('/trip', async (req, res) => {
     res.send(trip)
 })
 
-// router.put('/trip/:tripID', async (req,res) => {
-//     let tripID = req.params.tripID
-//     let body = req.body
-
-//     const trip = await Trip.findOne({ _id: tripID })
-//     trip.agenda[day].push(body)
-//     await trip.save()
-//     res.send(trip)
-
-// })
-
 router.post('/attraction', async (req, res) => {
     const { day, tripID, ...body } = req.body
     const attraction = new Attraction(body)
@@ -111,9 +100,7 @@ router.delete('/trip/:tripID/packingList/:itemID', async (req, res) => {
     await Trip.update({ _id: tripID },
         { $pull: { packingList: { _id: itemID } } }
     )
-
     const trip = await Trip.findOne({ _id: tripID })
-    // let item = trip.packingList.findIndex(item => item._id == itemID)
-    // trip.packingList.splice()
+
     res.send(trip)
 })

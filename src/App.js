@@ -52,7 +52,7 @@ class App extends Component {
   loadData = async () => {
     let { ownerID } = this.state
 
-    let trips = await axios.get(`http://localhost:4000/trips/${ownerID}`)
+    let trips = await axios.get(`/trips/${ownerID}`)
 
     //delay the launch screen
     setTimeout(() => this.setState({ trip: trips.data[0], showLaunchScreen: false }), 0)
@@ -70,18 +70,18 @@ class App extends Component {
       isChecked: false,
     }
 
-    const trip = (await axios.put(`http://localhost:4000/trip/${item.tripID}/packingList`, item)).data
+    const trip = (await axios.put(`/trip/${item.tripID}/packingList`, item)).data
     this.setState({trip})
   }
 
   handleCheck = async (itemID, isChecked) => {
-    let trip = (await axios.put(`http://localhost:4000/trip/${this.state.trip._id}/packingList/${itemID}`, {isChecked})).data
+    let trip = (await axios.put(`/trip/${this.state.trip._id}/packingList/${itemID}`, {isChecked})).data
     this.setState({trip})
   }
 
   deleteListItem = async (itemID) => {
 
-    let trip = (await axios.delete(`http://localhost:4000/trip/${this.state.trip._id}/packingList/${itemID}`)).data
+    let trip = (await axios.delete(`/trip/${this.state.trip._id}/packingList/${itemID}`)).data
     this.setState({trip})
   }
 

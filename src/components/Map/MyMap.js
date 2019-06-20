@@ -301,7 +301,7 @@ class MyMap extends Component {
             tripID: this.props.trip._id,
             day: day
         }
-        await axios.post('http://localhost:4000/attraction', location)
+        await axios.post('/attraction', location)
         this.props.loadData()
     }
 
